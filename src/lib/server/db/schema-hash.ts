@@ -13,7 +13,13 @@ export function getSchemaHash(sqlite: Database.Database): string {
 		// Sort by name so column order (migrate vs push) doesn't affect the hash
 		const normalized = columns
 			.sort((a, b) => a.name.localeCompare(b.name))
-			.map((c) => `${c.name}:${c.type.toUpperCase()}:${c.notnull}:${c.dflt_value ?? ''}:${c.pk}`)
+			.map((c) => {
+				// Normalize SQLite boolean defaults: 'false'→'0', 'true'→'1'
+				let dflt = c.dflt_value ?? '';
+				if (dflt.toLowerCase() === 'false') dflt = '0';
+				if (dflt.toLowerCase() === 'true') dflt = '1';
+				return `${c.name}:${c.type.toUpperCase()}:${c.notnull}:${dflt}:${c.pk}`;
+			})
 			.join(',');
 
 		parts.push(`${table}(${normalized})`);
