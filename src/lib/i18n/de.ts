@@ -1,10 +1,11 @@
 export default {
 	// Header
-	addLure: '+ Köder hinzufügen',
+	navLures: 'Köder',
+	addLure: 'Köder hinzufügen',
 	language: 'Sprache',
 
 	// Home
-	searchPlaceholder: 'Nach Name, Marke, Typ, Farbe suchen…',
+	searchPlaceholder: 'Suche…',
 	search: 'Suchen',
 	clear: 'Zurücksetzen',
 	filterAll: 'Alle',
@@ -69,13 +70,14 @@ export default {
 
 	// QR-Codes Seite
 	navQrCodes: 'QR-Codes',
-	qrCodesTitle: 'Unbeschriftete QR-Codes',
+	qrCodesTitle: 'Fehlende QR-Label',
 	noUnlabeledLures: 'Alle Köder wurden bereits beschriftet.',
 	printQrCodes: 'QR-Codes drucken',
 	placeLabel: 'Etikett angebracht',
 
 	// Errors
 	nameRequired: 'Name ist erforderlich',
+	photoRequired: 'Ein Foto ist erforderlich',
 
 	// Vordefinierte Ködertypen
 	lureTypes: [

@@ -5,17 +5,18 @@ A self-hosted web app to organize your fishing lures.
 ## Features
 
 - Add, edit, and delete lures
-- Fields: name, brand, type, color, weight, size, notes
+- Fields: name, brand, type, color, weight, size, notes, running depth, water type, weather
 - Fish species and tags (chip input)
 - Photo upload per lure (file picker or camera capture)
-- Filter by type, brand, color, water type, running depth, species
+- Filter by type, brand, color, water type, running depth, species (client-side, instant)
 - Auto-suggest on text fields based on existing entries
 - QR code label generator with print view
+- i18n: English and German (browser language auto-detected, switchable via flag picker)
 
 ## Tech Stack
 
 - **SvelteKit** — full-stack (UI + server routes)
-- **TailwindCSS** — styling
+- **TailwindCSS v4** — styling
 - **SQLite** — database via Drizzle ORM + better-sqlite3
 - **Docker** — deployment
 

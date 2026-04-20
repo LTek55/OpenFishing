@@ -1,1 +1,35 @@
 @import 'tailwindcss';
+
+@theme {
+  --color-ocean-950: #030a12;
+  --color-ocean-900: #060d17;
+  --color-ocean-800: #0b1a2c;
+  --color-ocean-750: #0d1f35;
+  --color-ocean-700: #0f2238;
+  --color-ocean-650: #132841;
+  --color-ocean-600: #172f4a;
+  --color-ocean-550: #1d3855;
+  --color-ocean-500: #243f5e;
+  --color-ocean-400: #2d5270;
+  --color-ocean-300: #3d6a84;
+  --color-ocean-200: #5d8fa8;
+  --color-ocean-100: #8ab8cc;
+  --color-ocean-50:  #c2dce8;
+
+  --color-wake-300: #67e8f9;
+  --color-wake-400: #22d3ee;
+  --color-wake-500: #06b6d4;
+  --color-wake-600: #0891b2;
+
+  --color-hook-300: #fde68a;
+  --color-hook-400: #fbbf24;
+  --color-hook-500: #f59e0b;
+
+  --font-heading: 'Syne', sans-serif;
+  --font-sans: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}

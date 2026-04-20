@@ -53,6 +53,14 @@ Tags are stored in a separate `tag` table (one row per tag). Species is stored a
 
 `lureNumber` is a sequential display number (shown as `#0001`). The primary key is a UUID used in URLs.
 
+### Navigation
+
+The layout (`src/routes/+layout.svelte`) has two bars:
+- **Main nav**: Logo + "Lures" button (active on `/` and `/lures/*`) + language switcher (far right)
+- **Sub nav**: QR Codes button + Add Lure button
+
+The language switcher is a `<select>` with flag emoji in the options (`🇬🇧 EN` / `🇩🇪 DE`), posting to `/api/lang`.
+
 ### i18n
 
 Translations live in `src/lib/i18n/en.ts` and `src/lib/i18n/de.ts`. The layout server (`src/routes/+layout.server.ts`) reads the `lang` cookie (falling back to `Accept-Language` header) and returns `{ t, lang }`, which SvelteKit merges into every page's `data` prop automatically. Language is switched via a `<select>` that POSTs to `/api/lang`.

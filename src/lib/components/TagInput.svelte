@@ -27,24 +27,24 @@
 	}
 </script>
 
-<!-- Hidden input carries the value on form submit -->
 <input type="hidden" {name} value={tags.join(' ')} />
 
-<!-- Tag field -->
 <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
 <div
-	class="flex flex-wrap gap-1.5 w-full border border-gray-300 rounded-lg px-3 py-2
-	       focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500
-	       cursor-text min-h-[42px]"
+	style="display:flex; flex-wrap:wrap; gap:6px; width:100%; min-height:42px; padding:8px 10px; background:#0f2238; border:1px solid #243f5e; border-radius:9px; box-sizing:border-box; cursor:text; transition:border-color 0.15s, box-shadow 0.15s;"
 	onclick={() => inputEl.focus()}
+	onfocusin={function(e){(e.currentTarget as HTMLElement).style.borderColor='#06b6d4'; (e.currentTarget as HTMLElement).style.boxShadow='0 0 0 3px rgba(6,182,212,0.1)';}}
+	onfocusout={function(e){(e.currentTarget as HTMLElement).style.borderColor='#243f5e'; (e.currentTarget as HTMLElement).style.boxShadow='none';}}
 >
 	{#each tags as tag, i (tag)}
-		<span class="inline-flex items-center gap-1 bg-blue-100 text-blue-800 text-sm px-2 py-0.5 rounded-md">
+		<span style="display:inline-flex; align-items:center; gap:4px; background:rgba(6,182,212,0.12); color:#22d3ee; font-size:0.8rem; padding:2px 8px; border-radius:6px; border:1px solid rgba(6,182,212,0.25);">
 			{tag}
 			<button
 				type="button"
 				onclick={() => removeTag(i)}
-				class="text-blue-500 hover:text-blue-800 leading-none"
+				style="color:#67e8f9; background:none; border:none; cursor:pointer; line-height:1; padding:0; font-size:0.85rem; opacity:0.7; display:flex; align-items:center;"
+				onmouseenter={function(e){(e.currentTarget as HTMLElement).style.opacity='1';}}
+				onmouseleave={function(e){(e.currentTarget as HTMLElement).style.opacity='0.7';}}
 				aria-label="Remove {tag}"
 			>×</button>
 		</span>
@@ -57,6 +57,6 @@
 		onblur={addTag}
 		type="text"
 		placeholder={tags.length === 0 ? 'e.g. pike saltwater topwater' : ''}
-		class="flex-1 min-w-24 outline-none text-base sm:text-sm bg-transparent placeholder-gray-400"
+		style="flex:1; min-width:96px; outline:none; background:transparent; color:#c2dce8; font-size:0.875rem; border:none; padding:1px 2px; font-family:'DM Sans',sans-serif;"
 	/>
 </div>

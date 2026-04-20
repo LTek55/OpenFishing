@@ -26,8 +26,7 @@ export const actions: Actions = {
 	default: async ({ request }) => {
 		const data = await request.formData();
 
-		const name = (data.get('name') as string)?.trim();
-		if (!name) return fail(400, { error: 'nameRequired' });
+		const name = (data.get('name') as string)?.trim() || 'Untitled';
 
 		const brand = (data.get('brand') as string)?.trim() || null;
 		const type = (data.get('type') as string)?.trim() || null;
@@ -43,10 +42,8 @@ export const actions: Actions = {
 		const weather = (data.get('weather') as string)?.trim() || null;
 
 		const photoFile = data.get('photo') as File;
-		let photoPath: string | null = null;
-		if (photoFile && photoFile.size > 0) {
-			photoPath = await saveUpload(photoFile);
-		}
+		if (!photoFile || photoFile.size === 0) return fail(400, { error: 'photoRequired' });
+		const photoPath = await saveUpload(photoFile);
 
 		const [{ maxNum }] = await db.select({ maxNum: max(lure.lureNumber) }).from(lure);
 		const lureNumber = (maxNum ?? 0) + 1;

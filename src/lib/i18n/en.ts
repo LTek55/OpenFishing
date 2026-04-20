@@ -1,10 +1,11 @@
 export default {
 	// Header
-	addLure: '+ Add Lure',
+	navLures: 'Lures',
+	addLure: 'Add Lure',
 	language: 'Language',
 
 	// Home
-	searchPlaceholder: 'Search by name, brand, type, color…',
+	searchPlaceholder: 'Search…',
 	search: 'Search',
 	clear: 'Clear',
 	filterAll: 'All',
@@ -69,13 +70,14 @@ export default {
 
 	// QR codes page
 	navQrCodes: 'QR Codes',
-	qrCodesTitle: 'Unlabeled QR Codes',
+	qrCodesTitle: 'Missing QR Labels',
 	noUnlabeledLures: 'All lures have been labeled.',
 	printQrCodes: 'Print QR Codes',
 	placeLabel: 'Place Label',
 
 	// Errors
 	nameRequired: 'Name is required',
+	photoRequired: 'A photo is required',
 
 	// Predefined lure types
 	lureTypes: [

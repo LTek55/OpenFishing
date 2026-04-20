@@ -16,32 +16,39 @@
 	};
 </script>
 
-<div class="max-w-xl">
-	<div class="mb-6 flex items-center gap-3">
-		<a href="/" class="text-gray-400 hover:text-gray-600 transition-colors">{t.back}</a>
-		<h1 class="text-2xl font-bold text-gray-900 truncate">{lure.name}</h1>
+<div style="max-width:580px;">
+	<div style="margin-bottom:20px; display:flex; align-items:center; gap:12px;">
+		<a href="/" style="color:#3d6a84; font-size:0.875rem; text-decoration:none; display:flex; align-items:center; gap:4px; transition:color 0.15s;"
+			onmouseenter={function(e){(e.currentTarget as HTMLElement).style.color='#22d3ee';}}
+			onmouseleave={function(e){(e.currentTarget as HTMLElement).style.color='#3d6a84';}}
+		>
+			<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			{t.back}
+		</a>
+		<h1 style="font-family:'Syne',sans-serif; font-weight:800; font-size:1.5rem; color:#e0eaf8; margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{lure.name}</h1>
 	</div>
 
-	<div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+	<div style="background:#0b1a2c; border:1px solid #172f4a; border-radius:16px; overflow:hidden;">
+
 		<!-- Photo -->
 		{#if lure.photoPath}
-			<div class="bg-gray-100" style="aspect-ratio: 4/3;">
-				<img
-					src="/uploads/{lure.photoPath}"
-					alt={lure.name}
-					class="w-full h-full object-cover"
-				/>
+			<div style="aspect-ratio:4/3; background:#0d1f35; position:relative;">
+				<img src="/uploads/{lure.photoPath}" alt={lure.name}
+					style="width:100%; height:100%; object-fit:cover; display:block;" />
+				<!-- gradient overlay at bottom -->
+				<div style="position:absolute; bottom:0; left:0; right:0; height:60px; background:linear-gradient(to top, rgba(11,26,44,0.7), transparent); pointer-events:none;"></div>
 			</div>
 		{/if}
 
-		<div class="relative p-4 sm:p-6 space-y-4">
-			<!-- QR code — top right of content box -->
-			<div class="absolute top-4 right-4 sm:top-6 sm:right-6 flex flex-col items-center gap-1">
-				<div class="relative w-16 h-16 bg-white border border-gray-200 rounded-lg p-1 shadow-sm">
+		<div style="position:relative; padding:20px 20px 20px;">
+
+			<!-- QR code — top right -->
+			<div style="position:absolute; top:20px; right:20px; display:flex; flex-direction:column; align-items:center; gap:4px;">
+				<div style="position:relative; width:64px; height:64px; background:#e8f0f7; border-radius:10px; padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.3);">
 					{@html qrSvg}
 					{#if !lure.qrCoded}
-						<div class="absolute bottom-0.5 right-0.5 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center shadow-sm">
-							<svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+						<div style="position:absolute; bottom:2px; right:2px; width:18px; height:18px; background:#f59e0b; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,0.4);">
+							<svg width="8" height="8" viewBox="0 0 10 10" fill="none">
 								<path d="M5 2.5v3" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
 								<circle cx="5" cy="7.5" r="0.9" fill="white"/>
 							</svg>
@@ -49,69 +56,72 @@
 					{/if}
 				</div>
 				{#if lure.lureNumber}
-					<span class="font-mono text-xs text-gray-400">#{String(lure.lureNumber).padStart(4, '0')}</span>
+					<span style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:#fbbf24; letter-spacing:0.05em;">#{String(lure.lureNumber).padStart(4, '0')}</span>
 				{/if}
 			</div>
 
-			<!-- Core details -->
-			<dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm pr-20 sm:pr-24">
+			<!-- Core details grid -->
+			<dl style="display:grid; grid-template-columns:1fr 1fr; gap:16px 24px; font-size:0.875rem; padding-right:88px; margin-bottom:16px;">
 				{#if lure.brand}
 					<div>
-						<dt class="text-gray-400 text-xs uppercase tracking-wide">{t.brand}</dt>
-						<dd class="font-medium text-gray-900 mt-0.5">{lure.brand}</dd>
+						<dt style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin-bottom:3px;">{t.brand}</dt>
+						<dd style="font-weight:600; color:#e0eaf8; margin:0;">{lure.brand}</dd>
 					</div>
 				{/if}
 				{#if lure.type}
 					<div>
-						<dt class="text-gray-400 text-xs uppercase tracking-wide">{t.type}</dt>
-						<dd class="font-medium text-gray-900 mt-0.5">{lure.type}</dd>
+						<dt style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin-bottom:3px;">{t.type}</dt>
+						<dd style="font-weight:600; color:#e0eaf8; margin:0;">{lure.type}</dd>
 					</div>
 				{/if}
 				{#if lure.color}
 					<div>
-						<dt class="text-gray-400 text-xs uppercase tracking-wide">{t.color}</dt>
-						<dd class="font-medium text-gray-900 mt-0.5">{lure.color}</dd>
+						<dt style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin-bottom:3px;">{t.color}</dt>
+						<dd style="font-weight:600; color:#e0eaf8; margin:0;">{lure.color}</dd>
 					</div>
 				{/if}
 				{#if lure.weight}
 					<div>
-						<dt class="text-gray-400 text-xs uppercase tracking-wide">{t.weightG}</dt>
-						<dd class="font-medium text-gray-900 mt-0.5">{lure.weight}g</dd>
+						<dt style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin-bottom:3px;">{t.weightG}</dt>
+						<dd style="font-weight:600; color:#e0eaf8; margin:0;">{lure.weight}g</dd>
 					</div>
 				{/if}
 				{#if lure.size}
 					<div>
-						<dt class="text-gray-400 text-xs uppercase tracking-wide">{t.size}</dt>
-						<dd class="font-medium text-gray-900 mt-0.5">{lure.size}</dd>
+						<dt style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin-bottom:3px;">{t.size}</dt>
+						<dd style="font-weight:600; color:#e0eaf8; margin:0;">{lure.size}</dd>
 					</div>
 				{/if}
 				{#if lure.runningDepth}
 					<div>
-						<dt class="text-gray-400 text-xs uppercase tracking-wide">{t.runningDepth}</dt>
-						<dd class="font-medium text-gray-900 mt-0.5">{runningDepthLabels[lure.runningDepth] ?? lure.runningDepth}</dd>
+						<dt style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin-bottom:3px;">{t.runningDepth}</dt>
+						<dd style="font-weight:600; color:#e0eaf8; margin:0;">{runningDepthLabels[lure.runningDepth] ?? lure.runningDepth}</dd>
 					</div>
 				{/if}
 				{#if lure.waterType}
 					<div>
-						<dt class="text-gray-400 text-xs uppercase tracking-wide">{t.waterType}</dt>
-						<dd class="font-medium text-gray-900 mt-0.5">{waterTypeLabels[lure.waterType] ?? lure.waterType}</dd>
+						<dt style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin-bottom:3px;">{t.waterType}</dt>
+						<dd style="font-weight:600; color:#e0eaf8; margin:0;">{waterTypeLabels[lure.waterType] ?? lure.waterType}</dd>
 					</div>
 				{/if}
 				{#if lure.weather}
 					<div>
-						<dt class="text-gray-400 text-xs uppercase tracking-wide">{t.weather}</dt>
-						<dd class="font-medium text-gray-900 mt-0.5">{lure.weather}</dd>
+						<dt style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin-bottom:3px;">{t.weather}</dt>
+						<dd style="font-weight:600; color:#e0eaf8; margin:0;">{lure.weather}</dd>
 					</div>
 				{/if}
-				</dl>
+			</dl>
+
+			<!-- Divider -->
+			<div style="height:1px; background:#172f4a; margin:0 0 16px;"></div>
 
 			<!-- Species -->
 			{#if lure.species}
-				<div>
-					<p class="text-gray-400 text-xs uppercase tracking-wide mb-1.5">{t.fishSpecies}</p>
-					<div class="flex flex-wrap gap-1.5">
+				<div style="margin-bottom:14px;">
+					<p style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin:0 0 8px;">{t.fishSpecies}</p>
+					<div style="display:flex; flex-wrap:wrap; gap:6px;">
 						{#each lure.species.split(/\s+/).filter(Boolean) as s}
-							<span class="bg-blue-50 text-blue-700 text-xs px-2.5 py-1 rounded-md font-medium">{s}</span>
+							<span style="font-size:0.78rem; padding:3px 10px; border-radius:6px; background:rgba(6,182,212,0.1); color:#22d3ee; border:1px solid rgba(6,182,212,0.2); font-weight:500;">{s}</span>
 						{/each}
 					</div>
 				</div>
@@ -119,11 +129,11 @@
 
 			<!-- Tags -->
 			{#if lure.tags.length > 0}
-				<div>
-					<p class="text-gray-400 text-xs uppercase tracking-wide mb-1.5">{t.tags}</p>
-					<div class="flex flex-wrap gap-1.5">
+				<div style="margin-bottom:14px;">
+					<p style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin:0 0 8px;">{t.tags}</p>
+					<div style="display:flex; flex-wrap:wrap; gap:6px;">
 						{#each lure.tags as tag (tag.id)}
-							<span class="bg-green-50 text-green-700 text-xs px-2.5 py-1 rounded-full font-medium">{tag.name}</span>
+							<span style="font-size:0.78rem; padding:3px 10px; border-radius:20px; background:rgba(74,222,128,0.08); color:#4ade80; border:1px solid rgba(74,222,128,0.15); font-weight:500;">{tag.name}</span>
 						{/each}
 					</div>
 				</div>
@@ -131,27 +141,28 @@
 
 			<!-- Notes -->
 			{#if lure.notes}
-				<div>
-					<p class="text-gray-400 text-xs uppercase tracking-wide mb-1">{t.notes}</p>
-					<p class="text-sm text-gray-700 whitespace-pre-wrap">{lure.notes}</p>
+				<div style="margin-bottom:14px;">
+					<p style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin:0 0 6px;">{t.notes}</p>
+					<p style="font-size:0.875rem; color:#8ab8cc; white-space:pre-wrap; margin:0; line-height:1.6;">{lure.notes}</p>
 				</div>
 			{/if}
 
-			<!-- Status -->
+			<!-- Labeled status -->
 			{#if lure.qrCoded}
-				<div>
-					<span class="inline-flex items-center gap-1.5 bg-green-50 text-green-700 text-xs font-medium px-2.5 py-1 rounded-full">
-						<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+				<div style="margin-bottom:14px;">
+					<span style="display:inline-flex; align-items:center; gap:6px; background:rgba(74,222,128,0.08); color:#4ade80; font-size:0.78rem; font-weight:600; padding:4px 10px; border-radius:20px; border:1px solid rgba(74,222,128,0.2);">
+						<svg width="10" height="10" viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 						{t.labeledStatus}
 					</span>
 				</div>
 			{/if}
 
 			<!-- Actions -->
-			<div class="flex flex-col sm:flex-row gap-2 pt-2 border-t border-gray-100">
-				<a
-					href="/lures/{lure.id}/edit"
-					class="w-full sm:w-auto text-center bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
+			<div style="display:flex; gap:8px; padding-top:4px; border-top:1px solid #172f4a; margin-top:4px;">
+				<a href="/lures/{lure.id}/edit"
+					style="display:inline-block; background:#06b6d4; color:#030a12; font-size:0.875rem; font-weight:600; padding:9px 20px; border-radius:9px; text-decoration:none; transition:background 0.15s; font-family:'DM Sans',sans-serif;"
+					onmouseenter={function(e){(e.currentTarget as HTMLElement).style.background='#22d3ee';}}
+					onmouseleave={function(e){(e.currentTarget as HTMLElement).style.background='#06b6d4';}}
 				>
 					{t.edit}
 				</a>
