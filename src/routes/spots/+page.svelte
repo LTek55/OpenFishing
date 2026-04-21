@@ -9,11 +9,13 @@
 	let mapEl: HTMLElement;
 	let mapInstance: any = null;
 	let L: any = null;
+	let spotLayerGroup: any = null;
 	let catchLayerGroup: any = null;
 	let mapReady = $state(false);
 
+	let showSpots = $state(true);
 	let showCatches = $state(false);
-	let heatmap = $state(false);
+	let showHeatmap = $state(false);
 
 	const hasData = spots.length > 0 || catches.length > 0;
 
@@ -37,13 +39,14 @@
 			maxZoom: 19
 		}).addTo(mapInstance);
 
-		// Add spot markers
+		// Build spot layer group
+		spotLayerGroup = L.layerGroup().addTo(mapInstance);
 		const spotMarkers: any[] = [];
 		for (const s of spots) {
 			const marker = L.marker([s.lat, s.lng], { icon: pinIcon })
 				.bindTooltip(s.name, { permanent: false, direction: 'top', offset: [0, -36] })
 				.on('click', () => { window.location.href = `/spots/${s.id}`; });
-			marker.addTo(mapInstance);
+			marker.addTo(spotLayerGroup);
 			spotMarkers.push(marker);
 		}
 
@@ -74,17 +77,20 @@
 	onDestroy(() => { mapInstance?.remove(); });
 
 	$effect(() => {
-		if (!mapReady || !L || !catchLayerGroup) return;
+		if (!mapReady || !L || !spotLayerGroup || !catchLayerGroup) return;
 
-		const _show = showCatches;
-		const _heat = heatmap;
+		if (showSpots) {
+			mapInstance.addLayer(spotLayerGroup);
+		} else {
+			mapInstance.removeLayer(spotLayerGroup);
+		}
 
 		catchLayerGroup.clearLayers();
-		if (!_show) return;
+		if (!showCatches && !showHeatmap) return;
 
 		for (const c of catches) {
 			if (c.lat === null || c.lng === null) continue;
-			if (_heat) {
+			if (showHeatmap) {
 				L.circleMarker([c.lat, c.lng], {
 					radius: 22,
 					fillColor: '#f97316',
@@ -138,23 +144,28 @@
 			<div style="padding:10px 14px; display:flex; align-items:center; gap:8px; border-bottom:1px solid #172f4a;">
 				<button
 					type="button"
-					onclick={() => { showCatches = !showCatches; if (!showCatches) heatmap = false; }}
+					onclick={() => showSpots = !showSpots}
+					style={pillBtn(showSpots)}
+				>
+					<svg width="12" height="12" viewBox="0 0 28 38" fill="none" style="display:inline; margin-right:5px; vertical-align:-1px;"><path d="M14 0C6.268 0 0 6.268 0 14c0 10.5 14 24 14 24S28 24.5 28 14C28 6.268 21.732 0 14 0z" fill="currentColor"/></svg>
+					{t.navSpots}
+				</button>
+				<button
+					type="button"
+					onclick={() => { showCatches = !showCatches; if (showCatches) showHeatmap = false; }}
 					style={pillBtn(showCatches)}
 				>
 					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="display:inline; margin-right:5px; vertical-align:-1px;"><path d="M2 12 C4 8 7 6 10 7 C13 8 14 11 17 11 C20 11 22 9 22 9 C22 9 21 14 18 15 C15 16 13 14 10 14 C7 14 4 16 2 12Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-					{t.spotShowCatches}
+					{t.navCatches}
 				</button>
-
-				{#if showCatches}
-					<button
-						type="button"
-						onclick={() => heatmap = !heatmap}
-						style={pillBtn(heatmap)}
-					>
-						<svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="display:inline; margin-right:5px; vertical-align:-1px;"><circle cx="12" cy="12" r="4" fill="currentColor" opacity="0.5"/><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.4" opacity="0.4"/><circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1" opacity="0.2"/></svg>
-						{t.spotHeatmap}
-					</button>
-				{/if}
+				<button
+					type="button"
+					onclick={() => { showHeatmap = !showHeatmap; if (showHeatmap) showCatches = false; }}
+					style={pillBtn(showHeatmap)}
+				>
+					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="display:inline; margin-right:5px; vertical-align:-1px;"><circle cx="12" cy="12" r="4" fill="currentColor" opacity="0.5"/><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.4" opacity="0.4"/><circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1" opacity="0.2"/></svg>
+					{t.spotHeatmap}
+				</button>
 			</div>
 
 			<!-- Map -->
@@ -164,14 +175,12 @@
 		<!-- Spots table -->
 		{#if spots.length > 0}
 			<div style="background:#0b1a2c; border:1px solid #172f4a; border-radius:14px; padding:20px;">
-				<p style="font-family:'Carter One',sans-serif; font-size:1rem; color:#e0eaf8; margin:0 0 14px;">{t.navSpots}</p>
 				<div style="overflow-x:auto;">
 					<table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
 						<thead>
 							<tr style="border-bottom:1px solid #172f4a;">
 								<th style="text-align:left; font-size:0.68rem; font-weight:500; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em; padding:0 12px 8px 0;"></th>
 								<th style="text-align:left; font-size:0.68rem; font-weight:500; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em; padding:0 12px 8px 0;">{t.spotNameLabel}</th>
-								<th style="text-align:left; font-size:0.68rem; font-weight:500; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em; padding:0 12px 8px 0;">{t.spotCoords}</th>
 								<th style="text-align:left; font-size:0.68rem; font-weight:500; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em; padding:0 0 8px 0;">{t.spotTagsLabel}</th>
 							</tr>
 						</thead>
@@ -195,7 +204,6 @@
 										{/if}
 									</td>
 									<td style="padding:8px 12px 8px 0; font-weight:600; color:#c2dce8; white-space:nowrap;">{s.name}</td>
-									<td style="padding:8px 12px 8px 0; font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:#3d6a84; white-space:nowrap;">{s.lat.toFixed(5)}, {s.lng.toFixed(5)}</td>
 									<td style="padding:8px 0 8px 0;">
 										{#if s.tags.length > 0}
 											<div style="display:flex; flex-wrap:wrap; gap:4px;">
