@@ -2,7 +2,11 @@
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
-	const { lure, qrSvg, t } = data;
+	const { lure, qrSvg, t, lureCatches } = data;
+
+	function formatDate(d: Date) {
+		return new Date(d).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
+	}
 
 	const waterTypeLabels: Record<string, string> = {
 		freshwater: t.waterType_freshwater,
@@ -161,4 +165,54 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- Catches with this lure -->
+<div style="background:#0b1a2c; border:1px solid #172f4a; border-radius:14px; padding:20px; margin-top:16px;">
+	<p style="font-family:'Carter One',sans-serif; font-size:1rem; color:#e0eaf8; margin:0 0 14px;">{t.navCatches}</p>
+
+	{#if lureCatches.length === 0}
+		<p style="font-size:0.875rem; color:#3d6a84; margin:0;">{t.catchNoItems}</p>
+	{:else}
+		<div style="overflow-x:auto;">
+			<table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+				<thead>
+					<tr style="border-bottom:1px solid #172f4a;">
+						<th style="text-align:left; font-size:0.68rem; font-weight:500; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em; padding:0 12px 8px 0;"></th>
+						<th style="text-align:left; font-size:0.68rem; font-weight:500; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em; padding:0 12px 8px 0;">{t.catchSpeciesLabel}</th>
+						<th style="text-align:left; font-size:0.68rem; font-weight:500; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em; padding:0 12px 8px 0;">{t.catchDateLabel}</th>
+						<th style="text-align:right; font-size:0.68rem; font-weight:500; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em; padding:0 12px 8px 0;">{t.catchLengthLabel}</th>
+						<th style="text-align:right; font-size:0.68rem; font-weight:500; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em; padding:0 0 8px 0;">{t.catchWeightLabel}</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each lureCatches as c}
+						<tr style="border-bottom:1px solid #0f2238; cursor:pointer;"
+							onclick={() => window.location.href = `/catches/${c.id}`}
+							onmouseenter={function(e){(e.currentTarget as HTMLElement).style.background='rgba(6,182,212,0.04)';}}
+							onmouseleave={function(e){(e.currentTarget as HTMLElement).style.background='';}}
+						>
+							<td style="padding:8px 10px 8px 0; width:40px;">
+								{#if c.photos.length > 0}
+									<div style="width:36px; height:28px; border-radius:5px; overflow:hidden; flex-shrink:0;">
+										<img src="/uploads/{c.photos[0].filename}" alt="" style="width:100%; height:100%; object-fit:cover;" />
+									</div>
+								{:else}
+									<div style="width:36px; height:28px; border-radius:5px; background:#0d1f35; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color:#1d3d5c;">
+											<path d="M2 12 C4 8 7 6 10 7 C13 8 14 11 17 11 C20 11 22 9 22 9 C22 9 21 14 18 15 C15 16 13 14 10 14 C7 14 4 16 2 12Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+										</svg>
+									</div>
+								{/if}
+							</td>
+							<td style="padding:8px 12px 8px 0; font-weight:600; color:#c2dce8; white-space:nowrap;">{c.species ?? '—'}</td>
+							<td style="padding:8px 12px 8px 0; color:#5d8fa8; white-space:nowrap;">{formatDate(c.caughtAt)}</td>
+							<td style="padding:8px 12px 8px 0; color:#22d3ee; font-family:'JetBrains Mono',monospace; text-align:right; white-space:nowrap;">{c.lengthCm != null ? `${c.lengthCm}` : '—'}</td>
+							<td style="padding:8px 0 8px 0; color:#22d3ee; font-family:'JetBrains Mono',monospace; text-align:right; white-space:nowrap;">{c.weightG != null ? `${c.weightG}` : '—'}</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+	{/if}
+</div>
 </div>

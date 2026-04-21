@@ -1,14 +1,23 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
+import { fishCatch, catchPhoto } from '$lib/server/db/schema';
+import { eq, desc, asc } from 'drizzle-orm';
 import QRCode from 'qrcode';
 import { env } from '$env/dynamic/private';
 
 export const load: PageServerLoad = async ({ params }) => {
-	const lure = await db.query.lure.findFirst({
-		where: (lure, { eq }) => eq(lure.id, params.id),
-		with: { tags: true }
-	});
+	const [lure, lureCatches] = await Promise.all([
+		db.query.lure.findFirst({
+			where: (lure, { eq }) => eq(lure.id, params.id),
+			with: { tags: true }
+		}),
+		db.query.fishCatch.findMany({
+			where: eq(fishCatch.lureId, params.id),
+			orderBy: [desc(fishCatch.caughtAt)],
+			with: { photos: { orderBy: [asc(catchPhoto.sortOrder)], limit: 1 } }
+		})
+	]);
 
 	if (!lure) error(404, 'Lure not found');
 
@@ -19,5 +28,5 @@ export const load: PageServerLoad = async ({ params }) => {
 		color: { dark: '#1e293b', light: '#ffffff' }
 	});
 
-	return { lure, qrSvg };
+	return { lure, qrSvg, lureCatches };
 };
