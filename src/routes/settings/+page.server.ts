@@ -76,6 +76,10 @@ export const actions: Actions = {
 			if (filename) writeFileSync(join(UPLOAD_DIR, filename), entry.getData());
 		}
 
+		// Drizzle SQLite mode:'timestamp' stores Unix seconds (not ms) — convert accordingly
+		const toSec = (v: unknown): number | null =>
+			v ? Math.floor(new Date(v as string).getTime() / 1000) : null;
+
 		const importFn = client.transaction(() => {
 			// Delete in FK-safe order (children first)
 			client.prepare('DELETE FROM catch_photo').run();
@@ -101,8 +105,7 @@ export const actions: Actions = {
 					photo_path: l.photoPath ?? null, species: l.species ?? null,
 					running_depth: l.runningDepth ?? null, water_type: l.waterType ?? null,
 					light_conditions: l.lightConditions ?? null, qr_coded: l.qrCoded ? 1 : 0,
-					created_at: l.createdAt ? new Date(l.createdAt as string).getTime() : null,
-					updated_at: l.updatedAt ? new Date(l.updatedAt as string).getTime() : null
+					created_at: toSec(l.createdAt), updated_at: toSec(l.updatedAt)
 				});
 			}
 
@@ -120,8 +123,7 @@ export const actions: Actions = {
 			for (const s of (payload.spots ?? [])) {
 				insertSpot.run({
 					id: s.id, name: s.name ?? 'Untitled', lat: s.lat, lng: s.lng, notes: s.notes ?? null,
-					created_at: s.createdAt ? new Date(s.createdAt as string).getTime() : null,
-					updated_at: s.updatedAt ? new Date(s.updatedAt as string).getTime() : null
+					created_at: toSec(s.createdAt), updated_at: toSec(s.updatedAt)
 				});
 			}
 
@@ -149,9 +151,8 @@ export const actions: Actions = {
 					id: c.id, species: c.species ?? null, weight_g: c.weightG ?? null,
 					length_cm: c.lengthCm ?? null, lat: c.lat ?? null, lng: c.lng ?? null,
 					notes: c.notes ?? null, lure_id: c.lureId ?? null,
-					caught_at: c.caughtAt ? new Date(c.caughtAt as string).getTime() : Date.now(),
-					created_at: c.createdAt ? new Date(c.createdAt as string).getTime() : null,
-					updated_at: c.updatedAt ? new Date(c.updatedAt as string).getTime() : null
+					caught_at: toSec(c.caughtAt) ?? Math.floor(Date.now() / 1000),
+					created_at: toSec(c.createdAt), updated_at: toSec(c.updatedAt)
 				});
 			}
 
