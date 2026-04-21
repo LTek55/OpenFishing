@@ -1,7 +1,34 @@
 export default {
 	// Header
-	navLures: 'Köder',
+	navLures: 'Köderbox',
 	addLure: 'Köder hinzufügen',
+	addSpot: 'Stelle hinzufügen',
+	addCatch: 'Fang hinzufügen',
+	settingsBackupRestore: 'Backup & Wiederherstellen',
+
+	// Spots
+	spotNameLabel: 'Name',
+	spotLocationLabel: 'Standort',
+	spotNotesLabel: 'Notizen',
+	spotTagsLabel: 'Tags',
+	spotPhotosLabel: 'Fotos',
+	spotSave: 'Stelle speichern',
+	spotLocationRequired: 'Standort erforderlich — klicke auf die Karte um einen Pin zu setzen.',
+	spotClickToPlace: 'Klicke auf die Karte um die Stelle zu markieren',
+	spotLocating: 'Standort wird ermittelt…',
+	spotUseMyLocation: 'Meinen Standort verwenden',
+	spotNoSpots: 'Noch keine Stellen',
+	spotNoSpotsHint: 'Füge deine erste Angelstelle hinzu.',
+	spotGetDirections: 'Route starten',
+	spotCoords: 'Koordinaten',
+	spotPhotoCount: 'Fotos',
+	spotNotesPlaceholder: 'Stelle beschreiben, Zugang, Tipps…',
+	spotEditTitle: 'Stelle bearbeiten',
+	spotSaveChanges: 'Änderungen speichern',
+	spotDelete: 'Stelle löschen',
+	spotDeleteConfirm: 'Diese Stelle löschen? Dies kann nicht rückgängig gemacht werden.',
+	spotRemovePhoto: 'Foto entfernen',
+	spotAddPhotos: 'Fotos hinzufügen',
 	language: 'Sprache',
 
 	// Home
@@ -69,6 +96,8 @@ export default {
 	lureId: 'Köder-Nr.',
 
 	// QR-Codes Seite
+	navSpots: 'Angelkarte',
+	navCatches: 'Fangbuch',
 	navQrCodes: 'QR-Codes',
 	navSettings: 'Einstellungen',
 	qrCodesTitle: 'Fehlende QR-Label',
@@ -76,9 +105,30 @@ export default {
 	printQrCodes: 'QR-Codes drucken',
 	placeLabel: 'Etikett angebracht',
 
+	// Catches
+	catchNoItems: 'Noch keine Fänge',
+	catchNoItemsHint: 'Trage deinen ersten Fang ein.',
+	catchDateLabel: 'Datum & Uhrzeit',
+	catchSpeciesLabel: 'Fischart',
+	catchWeightLabel: 'Gewicht (g)',
+	catchLengthLabel: 'Länge (cm)',
+	catchSpotLabel: 'Angelstelle',
+	catchLureLabel: 'Köder',
+	catchNotesPlaceholder: 'Bedingungen, Köder, Notizen…',
+	catchSave: 'Fang eintragen',
+	catchEditTitle: 'Fang bearbeiten',
+	catchDelete: 'Fang löschen',
+	catchDeleteConfirm: 'Diesen Fang löschen? Dies kann nicht rückgängig gemacht werden.',
+	catchSaveChanges: 'Änderungen speichern',
+	catchAddPhotos: 'Fotos hinzufügen',
+	catchNoSpot: 'Keine Stelle',
+	catchNoLure: 'Kein Köder',
+
 	// Errors
 	nameRequired: 'Name ist erforderlich',
 	photoRequired: 'Ein Foto ist erforderlich',
+	speciesRequired: 'Fischart ist erforderlich',
+	locationRequired: 'Standort erforderlich — klicke auf die Karte um einen Pin zu setzen.',
 
 	// Vordefinierte Ködertypen
 	lureTypes: [

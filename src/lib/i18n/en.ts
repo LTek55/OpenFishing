@@ -2,6 +2,33 @@ export default {
 	// Header
 	navLures: 'Lures',
 	addLure: 'Add Lure',
+	addSpot: 'Add Spot',
+	addCatch: 'Add Catch',
+	settingsBackupRestore: 'Backup & Restore',
+
+	// Spots
+	spotNameLabel: 'Name',
+	spotLocationLabel: 'Location',
+	spotNotesLabel: 'Notes',
+	spotTagsLabel: 'Tags',
+	spotPhotosLabel: 'Photos',
+	spotSave: 'Save Spot',
+	spotLocationRequired: 'A location is required — click the map to place a pin.',
+	spotClickToPlace: 'Click on the map to pin the spot',
+	spotLocating: 'Detecting your location…',
+	spotUseMyLocation: 'Use my location',
+	spotNoSpots: 'No spots yet',
+	spotNoSpotsHint: 'Add your first fishing spot to get started.',
+	spotGetDirections: 'Get Directions',
+	spotCoords: 'Coordinates',
+	spotPhotoCount: 'photos',
+	spotNotesPlaceholder: 'Describe the spot, access notes, tips…',
+	spotEditTitle: 'Edit Spot',
+	spotSaveChanges: 'Save Changes',
+	spotDelete: 'Delete Spot',
+	spotDeleteConfirm: 'Delete this spot? This cannot be undone.',
+	spotRemovePhoto: 'Remove photo',
+	spotAddPhotos: 'Add Photos',
 	language: 'Language',
 
 	// Home
@@ -69,6 +96,8 @@ export default {
 	lureId: 'Lure #',
 
 	// QR codes page
+	navSpots: 'Spots',
+	navCatches: 'Catches',
 	navQrCodes: 'QR Codes',
 	navSettings: 'Settings',
 	qrCodesTitle: 'Missing QR Labels',
@@ -76,9 +105,30 @@ export default {
 	printQrCodes: 'Print QR Codes',
 	placeLabel: 'Place Label',
 
+	// Catches
+	catchNoItems: 'No catches yet',
+	catchNoItemsHint: 'Log your first fishing catch to get started.',
+	catchDateLabel: 'Date & Time',
+	catchSpeciesLabel: 'Species',
+	catchWeightLabel: 'Weight (g)',
+	catchLengthLabel: 'Length (cm)',
+	catchSpotLabel: 'Spot',
+	catchLureLabel: 'Lure',
+	catchNotesPlaceholder: 'Conditions, bait used, notes…',
+	catchSave: 'Log Catch',
+	catchEditTitle: 'Edit Catch',
+	catchDelete: 'Delete Catch',
+	catchDeleteConfirm: 'Delete this catch record? This cannot be undone.',
+	catchSaveChanges: 'Save Changes',
+	catchAddPhotos: 'Add Photos',
+	catchNoSpot: 'No spot',
+	catchNoLure: 'No lure',
+
 	// Errors
 	nameRequired: 'Name is required',
 	photoRequired: 'A photo is required',
+	speciesRequired: 'Species is required',
+	locationRequired: 'A location is required — click the map to place a pin.',
 
 	// Predefined lure types
 	lureTypes: [

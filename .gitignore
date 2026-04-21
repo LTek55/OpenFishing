@@ -30,9 +30,11 @@ vite.config.ts.timestamp-*
 
 # Claude Code
 .claude/
+
+# Local / test artifacts
 .playwright-mcp/
 *.png
---help
+*.jpg.tmp
 
 # Uploads
 /uploads/

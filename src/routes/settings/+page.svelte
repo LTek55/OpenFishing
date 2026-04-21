@@ -16,9 +16,7 @@
 	}
 </script>
 
-<div style="max-width:640px;">
-	<h1 style="font-family:'Carter One',sans-serif; font-weight:800; font-size:1.5rem; color:#e0eaf8; margin:0 0 28px;">{t.navSettings}</h1>
-
+<div>
 	<!-- Database section -->
 	<section style="margin-bottom:32px;">
 		<h2 style="font-family:'Carter One',sans-serif; font-weight:700; font-size:1rem; color:#8ab8cc; text-transform:uppercase; letter-spacing:0.08em; margin:0 0 14px;">Database</h2>
