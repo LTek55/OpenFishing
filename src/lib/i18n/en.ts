@@ -29,6 +29,8 @@ export default {
 	spotDeleteConfirm: 'Delete this spot? This cannot be undone.',
 	spotRemovePhoto: 'Remove photo',
 	spotAddPhotos: 'Add Photos',
+	spotShowCatches: 'Show Catches',
+	spotHeatmap: 'Heatmap',
 	language: 'Language',
 
 	// Home

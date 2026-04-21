@@ -29,6 +29,8 @@ export default {
 	spotDeleteConfirm: 'Diese Stelle löschen? Dies kann nicht rückgängig gemacht werden.',
 	spotRemovePhoto: 'Foto entfernen',
 	spotAddPhotos: 'Fotos hinzufügen',
+	spotShowCatches: 'Fänge anzeigen',
+	spotHeatmap: 'Heatmap',
 	language: 'Sprache',
 
 	// Home
