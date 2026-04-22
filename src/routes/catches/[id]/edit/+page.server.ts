@@ -34,6 +34,7 @@ export const actions: Actions = {
 		const lngRaw = (data.get('lng') as string)?.trim();
 		const notes = (data.get('notes') as string)?.trim() || null;
 		const lureId = (data.get('lure_id') as string)?.trim() || null;
+		const catchAndRelease = data.get('catchAndRelease') === '1';
 
 		const caughtAt = caughtAtRaw ? new Date(caughtAtRaw) : new Date();
 		const weightG = weightRaw ? parseFloat(weightRaw) : null;
@@ -75,7 +76,7 @@ export const actions: Actions = {
 
 		await db
 			.update(fishCatch)
-			.set({ caughtAt, species, weightG, lengthCm, lat, lng, notes, lureId, updatedAt: new Date() })
+			.set({ caughtAt, species, weightG, lengthCm, lat, lng, notes, lureId, catchAndRelease, updatedAt: new Date() })
 			.where(eq(fishCatch.id, params.id));
 
 		redirect(303, `/catches/${params.id}`);

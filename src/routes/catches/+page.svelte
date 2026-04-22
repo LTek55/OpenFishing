@@ -7,6 +7,7 @@
 	// Filter state
 	let fSpecies    = $state('');
 	let fLure       = $state('');
+	let fCnR        = $state(false);
 	let datePreset  = $state<'' | '30d' | '1y' | 'custom'>('');
 	let dateFrom    = $state('');
 	let dateTo      = $state('');
@@ -15,11 +16,12 @@
 	const speciesOptions = $derived([...new Set(catches.map(c => c.species).filter(Boolean))].sort() as string[]);
 	const lureOptions    = $derived([...new Set(catches.map(c => c.lure?.name).filter(Boolean))].sort() as string[]);
 
-	const anyActive = $derived(!!(fSpecies || fLure || datePreset));
+	const anyActive = $derived(!!(fSpecies || fLure || fCnR || datePreset));
 
 	const filtered = $derived(catches.filter(c => {
 		if (fSpecies && c.species !== fSpecies) return false;
 		if (fLure    && c.lure?.name !== fLure) return false;
+		if (fCnR     && !c.catchAndRelease) return false;
 
 		if (datePreset) {
 			const d   = new Date(c.caughtAt).getTime();
@@ -38,7 +40,7 @@
 		return true;
 	}));
 
-	function clearAll() { fSpecies = ''; fLure = ''; datePreset = ''; dateFrom = ''; dateTo = ''; }
+	function clearAll() { fSpecies = ''; fLure = ''; fCnR = false; datePreset = ''; dateFrom = ''; dateTo = ''; }
 
 	function formatDate(d: Date) {
 		return new Date(d).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
@@ -73,6 +75,14 @@
 			{#if speciesOptions.length > 0 || lureOptions.length > 0}
 				<div style="width:1px; height:20px; background:#172f4a; flex-shrink:0;"></div>
 			{/if}
+
+			<button
+				type="button"
+				onclick={() => fCnR = !fCnR}
+				style="flex-shrink:0; font-size:0.8rem; padding:6px 12px; border-radius:8px; cursor:pointer; outline:none; font-family:'DM Sans',sans-serif; border:1px solid; transition:all 0.15s; {fCnR ? 'background:rgba(6,182,212,0.12); border-color:rgba(6,182,212,0.4); color:#22d3ee;' : 'background:#0f2238; border-color:#243f5e; color:#8ab8cc;'}"
+			>{t.catchAndReleaseShort}</button>
+
+			<div style="width:1px; height:20px; background:#172f4a; flex-shrink:0;"></div>
 
 			{#each [['', t.filterAll], ['30d', t.catchFilterLast30], ['1y', t.catchFilterLast365], ['custom', t.catchFilterCustom]] as [val, label]}
 				<button
@@ -160,13 +170,16 @@
 						</div>
 						<p style="font-size:0.75rem; color:#5d8fa8; margin:0 0 10px;">{formatDate(c.caughtAt)}</p>
 
-						{#if c.weightG || c.lengthCm}
-							<div style="display:flex; gap:6px; margin-bottom:8px;">
+						{#if c.weightG || c.lengthCm || c.catchAndRelease}
+							<div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
 								{#if c.weightG}
 									<span style="font-size:0.72rem; font-weight:600; color:#22d3ee; background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.2); padding:2px 8px; border-radius:20px;">{c.weightG}g</span>
 								{/if}
 								{#if c.lengthCm}
 									<span style="font-size:0.72rem; font-weight:600; color:#22d3ee; background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.2); padding:2px 8px; border-radius:20px;">{c.lengthCm}cm</span>
+								{/if}
+								{#if c.catchAndRelease}
+									<span style="font-size:0.72rem; font-weight:700; color:#22d3ee; background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.35); padding:2px 8px; border-radius:20px;">{t.catchAndReleaseShort}</span>
 								{/if}
 							</div>
 						{/if}

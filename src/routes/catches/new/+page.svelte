@@ -17,6 +17,7 @@
 	let photoPreviews = $state<string[]>([]);
 	let photoFiles = $state<File[]>([]);
 	let defaultDatetime = $state('');
+	let catchAndRelease = $state(false);
 
 	onMount(async () => {
 		const now = new Date();
@@ -255,6 +256,26 @@
 			<textarea id="notes" name="notes" rows="3" placeholder={t.catchNotesPlaceholder}
 				style="{inputStyle} resize:none; min-height:90px;"
 				onfocus={focusInput} onblur={blurInput}></textarea>
+		</div>
+
+		<!-- Catch & Release toggle -->
+		<div>
+			<input type="hidden" name="catchAndRelease" value={catchAndRelease ? '1' : '0'} />
+			<button
+				type="button"
+				onclick={() => catchAndRelease = !catchAndRelease}
+				style="display:inline-flex; align-items:center; gap:8px; padding:9px 18px; border-radius:9px; border:1px solid; cursor:pointer; font-size:0.875rem; font-weight:600; font-family:'DM Sans',sans-serif; transition:all 0.15s;
+					{catchAndRelease
+						? 'background:rgba(6,182,212,0.12); border-color:rgba(6,182,212,0.5); color:#22d3ee;'
+						: 'background:#0f2238; border-color:#243f5e; color:#5d8fa8;'}"
+			>
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;">
+					<path d="M12 3C7 3 3 7 3 12s4 9 9 9 9-4 9-9-4-9-9-9z" stroke="currentColor" stroke-width="1.5"/>
+					<path d="M8 12c1-2 3-3 4-1s3 3 4 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+					<path d="M15 8l1-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+				</svg>
+				{t.catchAndRelease}
+			</button>
 		</div>
 
 		<!-- Actions -->

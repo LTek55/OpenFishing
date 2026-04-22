@@ -25,6 +25,7 @@ export const actions: Actions = {
 		const lngRaw = (data.get('lng') as string)?.trim();
 		const notes = (data.get('notes') as string)?.trim() || null;
 		const lureId = (data.get('lure_id') as string)?.trim() || null;
+		const catchAndRelease = data.get('catchAndRelease') === '1';
 
 		const caughtAt = caughtAtRaw ? new Date(caughtAtRaw) : new Date();
 		const weightG = weightRaw ? parseFloat(weightRaw) : null;
@@ -37,7 +38,7 @@ export const actions: Actions = {
 
 		const [newCatch] = await db
 			.insert(fishCatch)
-			.values({ caughtAt, species, weightG, lengthCm, lat, lng, notes, lureId })
+			.values({ caughtAt, species, weightG, lengthCm, lat, lng, notes, lureId, catchAndRelease })
 			.returning();
 
 		const photoFiles = data.getAll('photos') as File[];

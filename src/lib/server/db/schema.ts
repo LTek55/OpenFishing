@@ -61,6 +61,7 @@ export const fishCatch = sqliteTable('fish_catch', {
 	lat: real('lat'),
 	lng: real('lng'),
 	notes: text('notes'),
+	catchAndRelease: integer('catch_and_release', { mode: 'boolean' }).notNull().default(false),
 	lureId: text('lure_id').references(() => lure.id, { onDelete: 'set null' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())

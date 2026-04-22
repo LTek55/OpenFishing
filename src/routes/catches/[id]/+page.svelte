@@ -97,8 +97,13 @@
 
 		<!-- Species + date -->
 		<div>
-			<h1 style="font-family:'Carter One',sans-serif; font-size:1.4rem; color:#e0eaf8; margin:0 0 4px;">{c.species ?? '—'}</h1>
-			<p style="font-size:0.8rem; color:#3d6a84; margin:0;">{formatDatetime(c.caughtAt)}</p>
+			<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+				<h1 style="font-family:'Carter One',sans-serif; font-size:1.4rem; color:#e0eaf8; margin:0;">{c.species ?? '—'}</h1>
+				{#if c.catchAndRelease}
+					<span style="font-size:0.7rem; font-weight:700; color:#22d3ee; background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.35); padding:3px 9px; border-radius:20px; letter-spacing:0.04em;">{t.catchAndReleaseShort}</span>
+				{/if}
+			</div>
+			<p style="font-size:0.8rem; color:#3d6a84; margin:4px 0 0;">{formatDatetime(c.caughtAt)}</p>
 		</div>
 
 		<!-- Length + Weight badges -->

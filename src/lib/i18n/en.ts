@@ -125,6 +125,8 @@ export default {
 	catchAddPhotos: 'Add Photos',
 	catchNoSpot: 'No spot',
 	catchNoLure: 'No lure',
+	catchAndRelease: 'Catch & Release',
+	catchAndReleaseShort: 'C&R',
 	catchFilterLast30: 'Last 30 days',
 	catchFilterLast365: 'Last year',
 	catchFilterCustom: 'Custom range',
