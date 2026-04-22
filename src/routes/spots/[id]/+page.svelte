@@ -4,7 +4,25 @@
 	import 'leaflet/dist/leaflet.css';
 
 	let { data }: { data: PageData } = $props();
-	const { t, spot, nearbyCatches } = data;
+	const { t, spot, nearbyCatches, weather } = data;
+
+	const moonPhaseLabels = [t.moonNew, t.moonWaxCrescent, t.moonFirstQ, t.moonWaxGibbous, t.moonFull, t.moonWanGibbous, t.moonLastQ, t.moonWanCrescent];
+	const moonEmojis = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
+
+	let showBiteInfo = $state(false);
+
+	function biteColor(score: number) {
+		if (score >= 8.5) return '#22d3ee';
+		if (score >= 6.5) return '#22c55e';
+		if (score >= 4)   return '#f59e0b';
+		return '#ef4444';
+	}
+	function biteRating(score: number) {
+		if (score >= 8.5) return t.biteRatingExcellent;
+		if (score >= 6.5) return t.biteRatingGood;
+		if (score >= 4)   return t.biteRatingFair;
+		return t.biteRatingPoor;
+	}
 
 	let mapEl: HTMLElement;
 	let mapInstance: any = null;
@@ -140,6 +158,161 @@
 			</a>
 		</div>
 	</div>
+
+	<!-- Weather card -->
+	{#if weather}
+		<div style="background:#0b1a2c; border:1px solid #172f4a; border-radius:14px; padding:16px 20px; margin-top:16px;">
+			<p style="font-size:0.72rem; font-weight:500; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em; margin:0 0 12px;">{t.weatherTitle}</p>
+
+			<!-- Bite index banner -->
+			<div style="background:#0d1f35; border:1px solid #172f4a; border-radius:10px; padding:14px 18px; margin-bottom:12px; display:flex; align-items:center; gap:16px;">
+				<div style="flex:1; min-width:0;">
+					<button
+						onclick={() => showBiteInfo = true}
+						style="display:inline-flex; align-items:center; gap:5px; background:none; border:none; padding:0; cursor:pointer; margin:0 0 8px;"
+					>
+						<span style="font-size:0.7rem; font-weight:600; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em;">{t.biteIndex}</span>
+						<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="color:#2d5270; flex-shrink:0;">
+							<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+							<path d="M12 11v5M12 8v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+						</svg>
+					</button>
+					<div style="background:#172f4a; border-radius:4px; height:5px; margin-bottom:6px;">
+						<div style="background:{biteColor(weather.biteIndex)}; border-radius:4px; height:5px; width:{weather.biteIndex * 10}%; transition:width 0.4s;"></div>
+					</div>
+					<span style="font-size:0.78rem; font-weight:600; color:{biteColor(weather.biteIndex)};">{biteRating(weather.biteIndex)}</span>
+				</div>
+				<div style="text-align:right; flex-shrink:0;">
+					<span style="font-family:'JetBrains Mono',monospace; font-size:2rem; font-weight:700; color:{biteColor(weather.biteIndex)}; line-height:1;">{weather.biteIndex}</span>
+					<span style="font-size:0.8rem; color:#3d6a84;">/10</span>
+				</div>
+			</div>
+
+			<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px;">
+
+				<!-- Temperature -->
+				<div style="background:#0d1f35; border:1px solid #172f4a; border-radius:10px; padding:12px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center;">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color:#22d3ee; flex-shrink:0;">
+						<path d="M12 3a2 2 0 0 0-2 2v8.27A4 4 0 1 0 14 17V5a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+						<circle cx="12" cy="17" r="2" fill="currentColor" opacity="0.4"/>
+					</svg>
+					<span style="font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:700; color:#e0eaf8; line-height:1;">{weather.temperature != null ? `${weather.temperature}°` : '—'}</span>
+					<span style="font-size:0.65rem; color:#3d6a84; font-weight:500; text-transform:uppercase; letter-spacing:0.05em;">{t.weatherTemp}</span>
+				</div>
+
+				<!-- Humidity -->
+				<div style="background:#0d1f35; border:1px solid #172f4a; border-radius:10px; padding:12px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center;">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color:#22d3ee; flex-shrink:0;">
+						<path d="M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+					</svg>
+					<span style="font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:700; color:#e0eaf8; line-height:1;">{weather.humidity != null ? `${weather.humidity}%` : '—'}</span>
+					<span style="font-size:0.65rem; color:#3d6a84; font-weight:500; text-transform:uppercase; letter-spacing:0.05em;">{t.weatherHumidity}</span>
+				</div>
+
+				<!-- Pressure -->
+				<div style="background:#0d1f35; border:1px solid #172f4a; border-radius:10px; padding:12px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center;">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color:#22d3ee; flex-shrink:0;">
+						<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+						<path d="M12 12L8.5 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+						<circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+					</svg>
+					<span style="font-family:'JetBrains Mono',monospace; font-size:0.85rem; font-weight:700; color:#e0eaf8; line-height:1;">{weather.pressure != null ? `${weather.pressure}` : '—'}<span style="font-size:0.6rem; color:#5d8fa8;"> hPa</span></span>
+				<span style="font-size:0.65rem; color:{weather.pressureDelta < -1.5 ? '#22d3ee' : weather.pressureDelta > 1.5 ? '#f59e0b' : '#3d6a84'};">
+					{weather.pressureDelta < -1.5 ? '↓' : weather.pressureDelta > 1.5 ? '↑' : '→'} {weather.pressureDelta > 0 ? '+' : ''}{weather.pressureDelta} hPa
+				</span>
+					<span style="font-size:0.65rem; color:#3d6a84; font-weight:500; text-transform:uppercase; letter-spacing:0.05em;">{t.weatherPressure}</span>
+				</div>
+
+				<!-- Moon phase -->
+				<div style="background:#0d1f35; border:1px solid #172f4a; border-radius:10px; padding:12px 10px; display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center;">
+					<span style="font-size:1.25rem; line-height:1;">{moonEmojis[weather.moonPhaseIndex]}</span>
+					<span style="font-size:0.75rem; font-weight:600; color:#c2dce8; line-height:1.2;">{moonPhaseLabels[weather.moonPhaseIndex]}</span>
+					<span style="font-size:0.65rem; color:#3d6a84; font-weight:500; text-transform:uppercase; letter-spacing:0.05em;">{t.weatherMoon}</span>
+				</div>
+
+			</div>
+		</div>
+	{/if}
+
+	<!-- Bite index info modal -->
+	{#if showBiteInfo && weather}
+		{@const ps = weather.biteScores.pressure}
+		{@const ls = weather.biteScores.light}
+		{@const ts = weather.biteScores.temp}
+		<div
+			role="dialog"
+			aria-modal="true"
+			onclick={() => showBiteInfo = false}
+			style="position:fixed; inset:0; background:rgba(3,10,18,0.75); backdrop-filter:blur(4px); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px;"
+		>
+			<div
+				onclick={(e) => e.stopPropagation()}
+				style="background:#0b1a2c; border:1px solid #243f5e; border-radius:16px; padding:24px; max-width:420px; width:100%;"
+			>
+				<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+					<h2 style="font-family:'Carter One',sans-serif; font-size:1rem; color:#e0eaf8; margin:0;">{t.biteInfoTitle}</h2>
+					<button onclick={() => showBiteInfo = false} style="background:none; border:none; cursor:pointer; color:#3d6a84; padding:4px;">
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+					</button>
+				</div>
+
+				<!-- Pressure -->
+				<div style="margin-bottom:14px;">
+					<div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:4px;">
+						<div style="display:flex; align-items:center; gap:8px;">
+							<span style="font-size:0.82rem; font-weight:600; color:#c2dce8;">{t.biteInfoPressure}</span>
+							<span style="font-size:0.65rem; color:#3d6a84; background:#0d1f35; border:1px solid #172f4a; padding:1px 6px; border-radius:10px;">50% {t.biteInfoWeight}</span>
+						</div>
+						<span style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; font-weight:700; color:{biteColor(ps)};">{ps}/10 {t.biteInfoScore}</span>
+					</div>
+					<div style="background:#172f4a; border-radius:3px; height:4px; margin-bottom:5px;">
+						<div style="background:{biteColor(ps)}; border-radius:3px; height:4px; width:{ps*10}%;"></div>
+					</div>
+					<p style="font-size:0.72rem; color:#3d6a84; margin:0;">
+						{weather.pressureDelta > 0 ? '+' : ''}{weather.pressureDelta} hPa / 3h — {t.biteInfoPressureDesc}
+					</p>
+				</div>
+
+				<!-- Light -->
+				<div style="margin-bottom:14px;">
+					<div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:4px;">
+						<div style="display:flex; align-items:center; gap:8px;">
+							<span style="font-size:0.82rem; font-weight:600; color:#c2dce8;">{t.biteInfoLight}</span>
+							<span style="font-size:0.65rem; color:#3d6a84; background:#0d1f35; border:1px solid #172f4a; padding:1px 6px; border-radius:10px;">30% {t.biteInfoWeight}</span>
+						</div>
+						<span style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; font-weight:700; color:{biteColor(ls)};">{ls}/10 {t.biteInfoScore}</span>
+					</div>
+					<div style="background:#172f4a; border-radius:3px; height:4px; margin-bottom:5px;">
+						<div style="background:{biteColor(ls)}; border-radius:3px; height:4px; width:{ls*10}%;"></div>
+					</div>
+					<p style="font-size:0.72rem; color:#3d6a84; margin:0;">{t.biteInfoLightDesc}</p>
+				</div>
+
+				<!-- Temperature -->
+				<div style="margin-bottom:20px;">
+					<div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:4px;">
+						<div style="display:flex; align-items:center; gap:8px;">
+							<span style="font-size:0.82rem; font-weight:600; color:#c2dce8;">{t.biteInfoTemp}</span>
+							<span style="font-size:0.65rem; color:#3d6a84; background:#0d1f35; border:1px solid #172f4a; padding:1px 6px; border-radius:10px;">20% {t.biteInfoWeight}</span>
+						</div>
+						<span style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; font-weight:700; color:{biteColor(ts)};">{ts}/10 {t.biteInfoScore}</span>
+					</div>
+					<div style="background:#172f4a; border-radius:3px; height:4px; margin-bottom:5px;">
+						<div style="background:{biteColor(ts)}; border-radius:3px; height:4px; width:{ts*10}%;"></div>
+					</div>
+					<p style="font-size:0.72rem; color:#3d6a84; margin:0;">
+						Δ {weather.tempDelta} °C / 3h — {t.biteInfoTempDesc}
+					</p>
+				</div>
+
+				<!-- Formula result -->
+				<div style="background:#0d1f35; border:1px solid #172f4a; border-radius:10px; padding:12px 16px; font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:#5d8fa8;">
+					{t.biteInfoFormula} = ({ps}×0.5) + ({ls}×0.3) + ({ts}×0.2) =
+					<span style="color:{biteColor(weather.biteIndex)}; font-weight:700;"> {weather.biteIndex}/10</span>
+				</div>
+			</div>
+		</div>
+	{/if}
 
 	<!-- Nearby catches -->
 	<div style="background:#0b1a2c; border:1px solid #172f4a; border-radius:14px; padding:20px; margin-top:16px;">
