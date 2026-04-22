@@ -90,6 +90,16 @@ export const load: PageServerLoad = async () => {
 	// Reorder Sun(0)→last: [Mon(1)..Sat(6), Sun(0)]
 	const weekdaysOrdered = [...weekdays.slice(1), weekdays[0]];
 
+	// ── Retrieve style (Köderführung) ─────────────────────────────────────────
+	const presentationMap = new Map<string, number>();
+	for (const c of catches) {
+		if (!c.presentation) continue;
+		presentationMap.set(c.presentation, (presentationMap.get(c.presentation) ?? 0) + 1);
+	}
+	const presentationStats = [...presentationMap.entries()]
+		.map(([style, count]) => ({ style, count }))
+		.sort((a, b) => b.count - a.count);
+
 	return {
 		totals: { totalCatches, cnrCount, cnrRate, distinctSpecies, totalSpots: spots.length },
 		speciesStats,
@@ -98,5 +108,6 @@ export const load: PageServerLoad = async () => {
 		months,
 		hourly,
 		weekdays: weekdaysOrdered,
+		presentationStats,
 	};
 };

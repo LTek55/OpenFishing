@@ -62,6 +62,7 @@ export default {
 	size: 'Size',
 	tags: 'Tags',
 	fishSpecies: 'Fish Species',
+	presentation: 'Retrieve Style',
 	runningDepth: 'Running Depth',
 	runningDepth_shallow: 'Shallow',
 	runningDepth_medium: 'Medium',
@@ -146,6 +147,7 @@ export default {
 	statsWeekday: 'Day of Week',
 	statsCatches: 'catches',
 	statsNoData: 'No catches logged yet.',
+	statsTopPresentations: 'Top Retrieve Styles',
 
 	// Weather
 	biteIndex: 'Bite Index',
@@ -189,6 +191,12 @@ export default {
 	photoRequired: 'A photo is required',
 	speciesRequired: 'Species is required',
 	locationRequired: 'A location is required — click the map to place a pin.',
+
+	// Predefined retrieve styles
+	lurePresentations: [
+		'Steady Retrieve', 'Stop & Go', 'Twitching', 'Jigging', 'Ripping',
+		'Slow Roll', 'Fast Retrieve', 'Deadstick', 'Walk the Dog', 'Popping', 'Dropshot'
+	],
 
 	// Predefined lure types
 	lureTypes: [

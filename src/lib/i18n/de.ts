@@ -62,6 +62,7 @@ export default {
 	size: 'Größe',
 	tags: 'Tags',
 	fishSpecies: 'Zielfisch',
+	presentation: 'Köderführung',
 	runningDepth: 'Lauftiefe',
 	runningDepth_shallow: 'Flach',
 	runningDepth_medium: 'Mittel',
@@ -146,6 +147,7 @@ export default {
 	statsWeekday: 'Wochentag',
 	statsCatches: 'Fänge',
 	statsNoData: 'Noch keine Fänge eingetragen.',
+	statsTopPresentations: 'Top Köderführungen',
 
 	// Weather
 	biteIndex: 'Bissindex',
@@ -189,6 +191,12 @@ export default {
 	photoRequired: 'Ein Foto ist erforderlich',
 	speciesRequired: 'Fischart ist erforderlich',
 	locationRequired: 'Standort erforderlich — klicke auf die Karte um einen Pin zu setzen.',
+
+	// Vordefinierte Köderführungen
+	lurePresentations: [
+		'Gleichmäßig', 'Stop & Go', 'Twitching', 'Jiggen', 'Ripping',
+		'Slow Roll', 'Schnell führen', 'Pause / Deadstick', 'Walk the Dog', 'Popping', 'Dropshot'
+	],
 
 	// Vordefinierte Ködertypen
 	lureTypes: [

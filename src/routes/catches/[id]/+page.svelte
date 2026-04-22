@@ -174,6 +174,14 @@
 			</div>
 		{/if}
 
+		<!-- Retrieve style -->
+		{#if c.presentation}
+			<div>
+				<p style="font-size:0.72rem; font-weight:500; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em; margin:0 0 6px;">{t.presentation}</p>
+				<span style="display:inline-block; padding:5px 14px; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2); border-radius:20px; font-size:0.875rem; color:#22d3ee; font-weight:500;">{c.presentation}</span>
+			</div>
+		{/if}
+
 		<!-- Notes -->
 		{#if c.notes}
 			<div>

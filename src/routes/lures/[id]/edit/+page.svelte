@@ -102,7 +102,6 @@
 	<datalist id="suggest-light-conditions">
 		{#each suggestions.lightConditions as w}<option value={w}></option>{/each}
 	</datalist>
-
 	<!-- Trigger-only inputs -->
 	<input bind:this={uploadInput} type="file" accept="image/*" class="hidden"
 		onchange={(e) => handleFile((e.target as HTMLInputElement).files?.[0])} />

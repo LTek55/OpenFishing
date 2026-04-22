@@ -2,7 +2,7 @@
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
-	const { t, totals, speciesStats, lureStats, spotStats, months, hourly, weekdays } = data;
+	const { t, totals, speciesStats, lureStats, spotStats, months, hourly, weekdays, presentationStats } = data;
 
 	// Locale-aware weekday labels (Mon–Sun)
 	const weekdayLabels = Array.from({ length: 7 }, (_, i) => {
@@ -22,8 +22,9 @@
 	const maxMonth   = Math.max(...months.map(m => m.count), 1);
 	const maxHour    = Math.max(...hourly.map(h => h.count), 1);
 	const maxWeekday = Math.max(...weekdays.map(d => d.count), 1);
-	const maxLure    = lureStats[0]?.count ?? 1;
-	const maxSpot    = spotStats[0]?.count ?? 1;
+	const maxLure         = lureStats[0]?.count ?? 1;
+	const maxSpot         = spotStats[0]?.count ?? 1;
+	const maxPresentation = presentationStats[0]?.count ?? 1;
 
 	const card = 'background:#0b1a2c; border:1px solid #172f4a; border-radius:14px; padding:20px;';
 	const label = 'font-size:0.68rem; font-weight:500; color:#3d6a84; text-transform:uppercase; letter-spacing:0.06em;';
@@ -105,6 +106,24 @@
 					<div style="background:#0d1f35; border-radius:3px; height:7px;">
 						<div style={bar(l.count, maxLure)}></div>
 					</div>
+				</div>
+			{/each}
+		</div>
+	</div>
+	{/if}
+
+	<!-- ── Top Retrieve Styles ──────────────────────────────────────────────── -->
+	{#if presentationStats.length > 0}
+	<div style="{card} margin-bottom:16px;">
+		<p style="{label} margin:0 0 16px;">{t.statsTopPresentations}</p>
+		<div style="display:flex; flex-direction:column; gap:8px;">
+			{#each presentationStats as p}
+				<div style="display:flex; align-items:center; gap:10px;">
+					<span style="font-size:0.78rem; color:#c2dce8; width:130px; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{p.style}</span>
+					<div style="flex:1; background:#0d1f35; border-radius:3px; height:14px;">
+						<div style={bar(p.count, maxPresentation)}></div>
+					</div>
+					<span style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:#5d8fa8; width:20px; text-align:right; flex-shrink:0;">{p.count}</span>
 				</div>
 			{/each}
 		</div>

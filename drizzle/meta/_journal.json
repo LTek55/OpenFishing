@@ -57,6 +57,13 @@
       "when": 1776862636213,
       "tag": "0007_clumsy_sage",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1776894103875,
+      "tag": "0008_known_kingpin",
+      "breakpoints": true
     }
   ]
 }

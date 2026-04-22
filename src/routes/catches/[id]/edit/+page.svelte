@@ -18,6 +18,7 @@
 	let photoFiles = $state<File[]>([]);
 	let removedPhotoIds = $state<string[]>([]);
 	let catchAndRelease = $state(c.catchAndRelease ?? false);
+	let presentation = $state(c.presentation ?? '');
 
 	function toDatetimeLocal(d: Date) {
 		const date = new Date(d);
@@ -279,6 +280,22 @@
 					<option value={l.id} selected={c.lureId === l.id}>{lureName(l)}</option>
 				{/each}
 			</select>
+		</div>
+
+		<!-- Retrieve style (Köderführung) -->
+		<div>
+			<label style={labelStyle}>{t.presentation}</label>
+			<input type="hidden" name="presentation" value={presentation} />
+			<div style="display:flex; flex-wrap:wrap; gap:6px;">
+				{#each t.lurePresentations as style}
+					<button type="button" onclick={() => presentation = presentation === style ? '' : style}
+						style="padding:6px 13px; border-radius:20px; font-size:0.8rem; font-weight:500; border:1px solid; cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif;
+							{presentation === style
+								? 'background:rgba(6,182,212,0.14); border-color:rgba(6,182,212,0.5); color:#22d3ee;'
+								: 'background:#0f2238; border-color:#243f5e; color:#5d8fa8;'}"
+					>{style}</button>
+				{/each}
+			</div>
 		</div>
 
 		<!-- Notes -->
