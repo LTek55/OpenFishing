@@ -21,7 +21,7 @@ export const load: PageServerLoad = async () => {
 				margin: 1,
 				color: { dark: '#000000', light: '#ffffff' }
 			});
-			return { id: l.id, lureNumber: l.lureNumber, name: l.name, brand: l.brand, qrSvg };
+			return { id: l.id, lureNumber: l.lureNumber, name: l.name, brand: l.brand, color: l.color, qrSvg };
 		})
 	);
 

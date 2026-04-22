@@ -90,11 +90,18 @@
 <div class="hidden print:block">
 	<div class="print-grid">
 		{#each items as item}
-			<div class="print-item">
+			<div class="print-label">
 				<div class="print-qr">
 					{@html item.qrSvg}
 				</div>
-				<span class="print-id">{formatNumber(item.lureNumber)}</span>
+				<div class="print-info">
+					<span class="print-id">{formatNumber(item.lureNumber)}</span>
+					<span class="print-brand">{item.brand ?? '—'}</span>
+					<span class="print-name">{item.name}</span>
+					{#if item.color}
+						<span class="print-color">{item.color}</span>
+					{/if}
+				</div>
 			</div>
 		{/each}
 	</div>
@@ -127,21 +134,24 @@
 		.print-grid {
 			display: flex;
 			flex-wrap: wrap;
-			gap: 2mm;
+			gap: 1.5mm;
 		}
 
-		.print-item {
+		.print-label {
 			display: flex;
 			flex-direction: row;
-			align-items: center;
-			gap: 1mm;
+			align-items: stretch;
+			height: 12.5mm;
+			border: 0.3mm solid #000;
+			border-radius: 0.5mm;
+			overflow: hidden;
 			break-inside: avoid;
 		}
 
 		.print-qr {
-			border: 1px solid #000;
-			padding: 0;
+			flex-shrink: 0;
 			line-height: 0;
+			border-right: 0.3mm solid #000;
 		}
 
 		.print-qr :global(svg) {
@@ -150,15 +160,55 @@
 			height: 12.5mm;
 		}
 
+		.print-info {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding: 0.8mm 1.5mm;
+			gap: 0;
+			overflow: hidden;
+			min-width: 0;
+			width: 28mm;
+		}
+
 		.print-id {
 			font-family: monospace;
 			font-size: 7pt;
 			font-weight: bold;
 			color: #000;
 			white-space: nowrap;
-			writing-mode: vertical-rl;
-			text-orientation: mixed;
-			transform: rotate(180deg);
+			line-height: 1.2;
+		}
+
+		.print-brand {
+			font-family: sans-serif;
+			font-size: 5pt;
+			color: #555;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			line-height: 1.3;
+		}
+
+		.print-name {
+			font-family: sans-serif;
+			font-size: 6.5pt;
+			font-weight: bold;
+			color: #000;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			line-height: 1.2;
+		}
+
+		.print-color {
+			font-family: sans-serif;
+			font-size: 5pt;
+			color: #444;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			line-height: 1.3;
 		}
 	}
 </style>

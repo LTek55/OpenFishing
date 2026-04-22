@@ -10,10 +10,10 @@
 </script>
 
 <div style="max-width:640px;">
-	<h1 style="font-family:'Carter One',sans-serif; font-size:1.5rem; color:#e0eaf8; margin:0 0 20px;">{t.navSettings}</h1>
+	<h1 class="no-print" style="font-family:'Carter One',sans-serif; font-size:1.5rem; color:#e0eaf8; margin:0 0 20px;">{t.navSettings}</h1>
 
 	<!-- Sub-nav -->
-	<nav style="display:flex; gap:6px; margin-bottom:28px; padding:4px; background:#0b1a2c; border:1px solid #172f4a; border-radius:12px; width:fit-content;">
+	<nav class="no-print" style="display:flex; gap:6px; margin-bottom:28px; padding:4px; background:#0b1a2c; border:1px solid #172f4a; border-radius:12px; width:fit-content;">
 		<a href="/settings"
 			style="font-size:0.8rem; font-weight:600; padding:7px 14px; border-radius:8px; text-decoration:none; transition:all 0.15s; letter-spacing:0.02em;
 				{backupActive ? 'color:#030a12; background:#06b6d4;' : 'color:#5d8fa8; background:transparent;'}"
