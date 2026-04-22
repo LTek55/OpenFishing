@@ -1,0 +1,1 @@
+ALTER TABLE `fish_catch` ADD `catch_and_release` integer DEFAULT false NOT NULL;
