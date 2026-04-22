@@ -68,12 +68,12 @@ npm run db:studio      # Open Drizzle Studio (DB GUI)
 
 ### Data model
 
-- `lure` — id (UUID), lureNumber (sequential int), name, brand, type, color, weight, size, notes, photoPath, species, runningDepth, waterType, weather, qrCoded, createdAt, updatedAt
+- `lure` — id (UUID), lureNumber (sequential int), name, brand, type, color, weight, size, notes, photoPath, species, runningDepth, waterType, weather, lightConditions, qrCoded, createdAt, updatedAt
 - `tag` — id, lureId (FK → lure, cascade delete), name
 - `spot` — id (UUID), name, lat, lng, notes, createdAt, updatedAt
 - `spotTag` — id, spotId (FK → spot, cascade delete), name
 - `spotPhoto` — id, spotId (FK → spot, cascade delete), filename, sortOrder
-- `fishCatch` — id (UUID), caughtAt, species, weightG, lengthCm, lat (nullable), lng (nullable), notes, lureId (FK → lure, set null on delete), createdAt, updatedAt
+- `fishCatch` — id (UUID), caughtAt, species, weightG, lengthCm, lat (nullable), lng (nullable), notes, catchAndRelease, presentation, lureId (FK → lure, set null on delete), createdAt, updatedAt
 - `catchPhoto` — id, catchId (FK → fishCatch, cascade delete), filename, sortOrder
 
 Tags are stored in separate tag tables (one row per tag). Species is stored as a space-separated string in `lure.species`. Both use the `TagInput` chip component at `src/lib/components/TagInput.svelte`.
@@ -111,6 +111,14 @@ Photos are saved to `UPLOAD_PATH` (env var, defaults to `./uploads`) and served 
 Leaflet is always dynamically imported inside `onMount` (`const L = (await import('leaflet')).default`). The map element (`bind:this={mapEl}`) must have only a static `style="height:Xpx;"` — never reactive styles on the same element, as Svelte mutating the element Leaflet tracks causes tile offset corruption. Wrap it in a parent div if border/radius styling is needed.
 
 Always call `requestAnimationFrame(() => mapInstance.invalidateSize())` after `setView` to fix tile rendering when the element was not visible at mount time.
+
+### Select / dropdown styling
+
+All `<select>` elements use `appearance: none` (with `-webkit-` and `-moz-` prefixes) defined globally in `src/routes/layout.css` with a custom SVG chevron via `background-image`. The `!important` flags are required because inline `background` shorthand on individual selects would otherwise reset `background-image` to none.
+
+Filter selects (lures overview, catches page) must use the same visual style as form selects: `font-size:0.875rem`, `padding:7px 12px`, `border-radius:9px`, `background:#0f2238`. Active (filtered) state: `border:1px solid rgba(6,182,212,0.5); color:#22d3ee`. Inactive: `border:1px solid #243f5e; color:#c2dce8`.
+
+Filter bars use `flex-wrap:wrap` (not `overflow-x:auto`) so they reflow to multiple rows on mobile instead of scrolling horizontally.
 
 ### Filtering & pagination
 

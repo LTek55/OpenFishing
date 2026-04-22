@@ -22,10 +22,19 @@ A self-hosted web app to organize your fishing lures, mark fishing spots, and lo
 
 ### Catches
 - Log catches with species, length, weight, date/time, notes, and photos
+- Record retrieve style (Köderführung) per catch: Steady Retrieve, Stop & Go, Jigging, Ripping, and more
 - Place exact catch location on an interactive map (GPS auto-locate on mobile)
 - Cross-reference the lure used
 - Automatically linked to the nearest defined spot within 100m
-- Catch detail page shows linked lure and spot
+- Catch detail page shows linked lure, spot, and retrieve style
+
+### Stats
+- Trophy bar: total catches, species count, spots fished, C&R rate
+- Personal bests per species (max length + weight, clickable links to catch record)
+- Top lures by catch count with C&R breakdown
+- Top retrieve styles bar chart
+- Monthly activity (last 12 months), time-of-day histogram, day-of-week breakdown
+- Top spots by catch count
 
 ### General
 - i18n: English and German (auto-detected from browser, switchable via flag picker)
