@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **OpenFishing** is a self-hosted SvelteKit + SQLite web app for organizing fishing lures, marking fishing spots, and logging catches.
 
-No in-app authentication — auth is delegated to the reverse proxy / load balancer (e.g. nginx or Traefik basic auth).
+Optional built-in password auth via `AUTH_PASSWORD` env var. If unset, the app is fully open. When set, `src/hooks.server.ts` intercepts every request and redirects to `/login` if the `of_session` cookie is missing or invalid. The session token is an HMAC-SHA256 of the password — no DB storage, no server-side state. Changing the password invalidates all sessions immediately.
 
 ## Tech Stack
 
@@ -65,10 +65,12 @@ npm run db:studio      # Open Drizzle Studio (DB GUI)
 | `/settings/qr` | Print QR labels for unlabeled lures |
 | `/uploads/[filename]` | Serve uploaded photos from `UPLOAD_PATH` |
 | `/api/lang` | POST — sets `lang` cookie for i18n |
+| `/api/lures/[id]/favourite` | POST — toggles favourite state, returns `{ favourite: bool }` |
+| `/login` | Password login page (only shown when `AUTH_PASSWORD` is set) |
 
 ### Data model
 
-- `lure` — id (UUID), lureNumber (sequential int), name, brand, type, color, weight, size, notes, photoPath, species, runningDepth, waterType, weather, lightConditions, qrCoded, createdAt, updatedAt
+- `lure` — id (UUID), lureNumber (sequential int), name, brand, type, color, weight, size, notes, photoPath, species, runningDepth, waterType, lightConditions (integer 0–10), favourite (boolean), qrCoded (boolean), createdAt, updatedAt
 - `tag` — id, lureId (FK → lure, cascade delete), name
 - `spot` — id (UUID), name, lat, lng, notes, createdAt, updatedAt
 - `spotTag` — id, spotId (FK → spot, cascade delete), name
@@ -76,9 +78,11 @@ npm run db:studio      # Open Drizzle Studio (DB GUI)
 - `fishCatch` — id (UUID), caughtAt, species, weightG, lengthCm, lat (nullable), lng (nullable), notes, catchAndRelease, presentation, lureId (FK → lure, set null on delete), createdAt, updatedAt
 - `catchPhoto` — id, catchId (FK → fishCatch, cascade delete), filename, sortOrder
 
-Tags are stored in separate tag tables (one row per tag). Species is stored as a space-separated string in `lure.species`. Both use the `TagInput` chip component at `src/lib/components/TagInput.svelte`.
+Tags are stored in separate tag tables (one row per tag). Species is stored as a space-separated string in `lure.species`. Both use the `TagInput` chip component at `src/lib/components/TagInput.svelte`. `TagInput` accepts a `suggest` prop (`string[]`) that wires a `<datalist>` for autocomplete.
 
 `lureNumber` is a sequential display number (shown as `#0001`). The primary key is a UUID used in URLs.
+
+`lightConditions` is an integer 0–10 (0 = Night, 10 = Clear). Displayed using translation keys `lightConditions_0` … `lightConditions_10`. Edited via a labeled range slider in the lure forms. Stored as `null` when not set.
 
 ### Spot ↔ Catch relationship
 
@@ -92,9 +96,9 @@ This approach avoids storing a redundant FK while still supporting the "no spot 
 
 ### Navigation
 
-The layout (`src/routes/+layout.svelte`) has two bars:
-- **Main nav**: Logo + section buttons (Lures, Spots, Catches) with active state + language switcher (far right)
-- **Sub nav**: Contextual action buttons (Add Lure / Add Spot / Add Catch depending on section) + QR Codes
+The layout (`src/routes/+layout.svelte`) renders the full nav chrome for all routes **except** `/login`, which is detected via `$page.url.pathname` and renders `{@render children()}` directly. The nav has:
+- **Desktop**: Logo + section links + "Add" dropdown + language switcher
+- **Mobile**: Top bar (logo + Add dropdown + lang) + fixed bottom tab bar
 
 The language switcher is a `<select>` with flag emoji in the options (`🇬🇧 EN` / `🇩🇪 DE`), posting to `/api/lang`.
 
@@ -122,11 +126,15 @@ Filter bars use `flex-wrap:wrap` (not `overflow-x:auto`) so they reflow to multi
 
 ### Filtering & pagination
 
-The overview page (`/`) loads all lures once from the server and filters client-side using Svelte 5 `$derived`. Filters: text search, type, brand, color, water type, running depth, fish species. Pagination state (page, pageSize) is also client-side. Do not move filtering to the server.
+The overview page (`/`) loads all lures once from the server and filters client-side using Svelte 5 `$derived`. Filters use an include/exclude chip model (`ChipFilter = Record<string, 'include' | 'exclude'>`): clicking once includes (cyan), again excludes (red strikethrough), again clears. Active filters: type, running depth, light conditions, fish species, favourites toggle. Pagination default is 12 per page. Do not move filtering to the server.
+
+### Favourites
+
+`lure.favourite` is a boolean (SQLite integer). Toggled via `POST /api/lures/[id]/favourite` which flips the value and returns `{ favourite: bool }`. The overview page tracks state in a local `Record<string, boolean>` initialized from server data and updated optimistically on click — the card heart icon and the favourites filter row both react to this local state.
 
 ### Auto-suggest
 
-The new/edit lure forms load distinct existing values for `name`, `brand`, `type`, and `color` from the DB and wire them to `<datalist>` elements.
+The new/edit lure forms load distinct existing values for `name`, `brand`, `type`, and `color` from the DB and wire them to `<datalist>` elements. Fish species suggestions are loaded by splitting all existing `lure.species` space-separated strings, deduplicating, and passing as `suggest` to the species `TagInput`.
 
 ### QR labels
 
@@ -143,4 +151,5 @@ Drizzle migrations run automatically on startup in production (`NODE_ENV=product
 | `DATABASE_URL` | `local.db` | Path to SQLite file |
 | `UPLOAD_PATH` | `./uploads` | Directory for lure/spot/catch photos |
 | `BASE_URL` | `http://localhost:5173` | Public base URL — used to generate QR code links |
+| `AUTH_PASSWORD` | _(unset)_ | If set, enables password login. Leave unset for open access. |
 | `BODY_SIZE_LIMIT` | `104857600` | Max upload size in bytes (set in Dockerfile) |
