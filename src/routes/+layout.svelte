@@ -220,17 +220,44 @@
 	<!-- Footer -->
 	<footer class="no-print pb-20 md:pb-6" style="border-top:1px solid #0f2238; padding-top:20px; background:transparent;">
 		<div class="max-w-6xl mx-auto px-4">
-			<div style="display:flex; justify-content:center;">
+			<div style="display:flex; justify-content:center; align-items:center; gap:12px;">
+
+				<!-- GitHub -->
 				<a href="https://github.com/m1ndgames/openfishing" target="_blank" rel="noopener noreferrer"
-					style="display:flex; align-items:center; gap:8px; text-decoration:none; color:#3d6a84; transition:color 0.15s; font-size:0.8rem; font-family:'DM Sans',sans-serif;"
-					onmouseenter={function(e){(e.currentTarget as HTMLElement).style.color='#8ab8cc';}}
-					onmouseleave={function(e){(e.currentTarget as HTMLElement).style.color='#3d6a84';}}
+					title="GitHub"
+					style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; background:#0f2238; border:1px solid #1e3a56; color:#3d6a84; text-decoration:none; transition:color 0.15s, border-color 0.15s, background 0.15s; flex-shrink:0;"
+					onmouseenter={function(e){const el=e.currentTarget as HTMLElement; el.style.color='#c2dce8'; el.style.borderColor='#3d6a84'; el.style.background='#172f4a';}}
+					onmouseleave={function(e){const el=e.currentTarget as HTMLElement; el.style.color='#3d6a84'; el.style.borderColor='#1e3a56'; el.style.background='#0f2238';}}
 				>
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+					<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
 						<path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
 					</svg>
-					OpenFishing
 				</a>
+
+				<!-- Discord -->
+				<a href="https://discord.gg/jETYPFXdGr" target="_blank" rel="noopener noreferrer"
+					title="Discord"
+					style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; background:#0f2238; border:1px solid #1e3a56; color:#3d6a84; text-decoration:none; transition:color 0.15s, border-color 0.15s, background 0.15s; flex-shrink:0;"
+					onmouseenter={function(e){const el=e.currentTarget as HTMLElement; el.style.color='#5865f2'; el.style.borderColor='#5865f2'; el.style.background='rgba(88,101,242,0.1)';}}
+					onmouseleave={function(e){const el=e.currentTarget as HTMLElement; el.style.color='#3d6a84'; el.style.borderColor='#1e3a56'; el.style.background='#0f2238';}}
+				>
+					<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+						<path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.01.022.02.043.032.054a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+					</svg>
+				</a>
+
+				<!-- Ko-Fi -->
+				<a href="https://ko-fi.com/m1ndio" target="_blank" rel="noopener noreferrer"
+					title="Ko-Fi"
+					style="display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; background:#0f2238; border:1px solid #1e3a56; color:#3d6a84; text-decoration:none; transition:color 0.15s, border-color 0.15s, background 0.15s; flex-shrink:0;"
+					onmouseenter={function(e){const el=e.currentTarget as HTMLElement; el.style.color='#ff5e5b'; el.style.borderColor='#ff5e5b'; el.style.background='rgba(255,94,91,0.1)';}}
+					onmouseleave={function(e){const el=e.currentTarget as HTMLElement; el.style.color='#3d6a84'; el.style.borderColor='#1e3a56'; el.style.background='#0f2238';}}
+				>
+					<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+						<path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 2.655.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/>
+					</svg>
+				</a>
+
 			</div>
 		</div>
 	</footer>
