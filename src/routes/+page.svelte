@@ -9,11 +9,16 @@
 	type ChipMode = 'include' | 'exclude';
 	type ChipFilter = Record<string, ChipMode>;
 
-	let search        = $state('');
-	let filterType    = $state<ChipFilter>({});
-	let filterDepth   = $state<ChipFilter>({});
-	let filterLight   = $state<ChipFilter>({});
-	let filterSpecies = $state<ChipFilter>({});
+	let search           = $state('');
+	let filterType       = $state<ChipFilter>({});
+	let filterDepth      = $state<ChipFilter>({});
+	let filterLight      = $state<ChipFilter>({});
+	let filterSpecies    = $state<ChipFilter>({});
+	let filterFavourites = $state(false);
+
+	let favourites = $state<Record<string, boolean>>(
+		Object.fromEntries(data.lures.map(l => [l.id, l.favourite]))
+	);
 
 	let page     = $state(1);
 	let pageSize = $state(16);
@@ -30,6 +35,7 @@
 	);
 	const anyActive = $derived(
 		!!search ||
+		filterFavourites ||
 		Object.keys(filterType).length > 0 ||
 		Object.keys(filterDepth).length > 0 || Object.keys(filterLight).length > 0 ||
 		Object.keys(filterSpecies).length > 0
@@ -68,6 +74,7 @@
 	}
 
 	const filtered = $derived(data.lures.filter(l => {
+		if (filterFavourites && !favourites[l.id])           return false;
 		if (!passesFilter(l.type,             filterType))   return false;
 		if (!passesFilter(l.runningDepth,     filterDepth))  return false;
 		if (!passesFilter(l.lightConditions != null ? String(l.lightConditions) : null, filterLight)) return false;
@@ -89,13 +96,26 @@
 	const pageItems   = $derived(filtered.slice((pageClamped - 1) * pageSize, pageClamped * pageSize));
 
 	$effect(() => {
-		search; filterType; filterDepth; filterLight; filterSpecies; pageSize;
+		search; filterFavourites; filterType; filterDepth; filterLight; filterSpecies; pageSize;
 		page = 1;
 	});
 
 	function clearAll() {
 		search = '';
+		filterFavourites = false;
 		filterType = {}; filterDepth = {}; filterLight = {}; filterSpecies = {};
+	}
+
+	async function toggleFavourite(id: string, e: MouseEvent) {
+		e.preventDefault();
+		e.stopPropagation();
+		favourites[id] = !favourites[id];
+		try {
+			const res = await fetch(`/api/lures/${id}/favourite`, { method: 'POST' });
+			if (!res.ok) favourites[id] = !favourites[id]; // revert on error
+		} catch {
+			favourites[id] = !favourites[id];
+		}
 	}
 
 	function chipStyle(mode: ChipMode | undefined): string {
@@ -194,6 +214,19 @@
 					</div>
 				{/if}
 
+				<!-- Favourites row -->
+				<div style="display:flex; align-items:center; gap:10px;">
+					<span style="min-width:88px; text-align:right; font-size:0.7rem; color:#3d6a84; font-weight:500; flex-shrink:0;">{t.filterFavourites}</span>
+					<button
+						onclick={() => filterFavourites = !filterFavourites}
+						style="display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; padding:3px 10px; border-radius:20px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background 0.12s, border-color 0.12s, color 0.12s; border-style:solid; border-width:1px; line-height:1.5; {filterFavourites ? 'background:rgba(239,68,68,0.1); border-color:rgba(239,68,68,0.4); color:#f87171;' : 'background:transparent; border-color:#1e3a56; color:#3d6a84;'}"
+					>
+						<svg width="11" height="11" viewBox="0 0 24 24" fill={filterFavourites ? '#f87171' : 'none'} stroke={filterFavourites ? '#f87171' : '#3d6a84'} stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+						</svg>
+					</button>
+				</div>
+
 			</div>
 		{/if}
 
@@ -291,6 +324,23 @@
 								</svg>
 							</div>
 						{/if}
+
+						<!-- Favourite heart -->
+						<button
+							type="button"
+							onclick={(e) => toggleFavourite(lure.id, e)}
+							aria-label={favourites[lure.id] ? 'Remove from favourites' : 'Add to favourites'}
+							style="position:absolute; bottom:8px; right:8px; background:none; border:none; cursor:pointer; padding:0; display:flex; align-items:center; justify-content:center;"
+						>
+							<svg width="14" height="14" viewBox="0 0 24 24"
+								fill={favourites[lure.id] ? '#f87171' : 'none'}
+								stroke={favourites[lure.id] ? '#f87171' : '#8ab8cc'}
+								stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+								style="transition:fill 0.15s, stroke 0.15s; filter:drop-shadow(0 1px 2px rgba(0,0,0,0.7));"
+							>
+								<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+							</svg>
+						</button>
 					</div>
 
 					<!-- Card body -->

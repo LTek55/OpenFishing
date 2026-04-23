@@ -1,0 +1,1 @@
+ALTER TABLE `lure` ADD `favourite` integer DEFAULT false NOT NULL;

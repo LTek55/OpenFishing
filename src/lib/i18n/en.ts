@@ -38,6 +38,7 @@ export default {
 	search: 'Search',
 	clear: 'Clear',
 	filterAll: 'All',
+	filterFavourites: 'Favourites',
 	filterActive: 'filters',
 	perPage: 'Per page',
 	lure_singular: 'lure',
