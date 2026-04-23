@@ -154,8 +154,8 @@
 					</div>
 				{/if}
 
-				{#if depths.length > 0 || lights.length > 0}
-					<div style="display:flex; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+				{#if depths.length > 0}
+					<div style="display:flex; align-items:flex-start; gap:10px;">
 						<span style="min-width:88px; text-align:right; font-size:0.7rem; color:#3d6a84; font-weight:500; padding-top:4px; flex-shrink:0;">{t.runningDepth}</span>
 						<div style="display:flex; flex-wrap:wrap; gap:5px;">
 							{#each depths as opt}
@@ -165,18 +165,20 @@
 								</button>
 							{/each}
 						</div>
-						{#if lights.length > 0}
-							<span style="font-size:0.7rem; color:#243f5e; padding-top:4px; flex-shrink:0; user-select:none;">·</span>
-							<span style="font-size:0.7rem; color:#3d6a84; font-weight:500; padding-top:4px; flex-shrink:0;">{t.lightConditions}</span>
-							<div style="display:flex; flex-wrap:wrap; gap:5px;">
-								{#each lights as opt}
-									<button style={chipStyle(filterLight[String(opt)])} title={chipTitle(filterLight[String(opt)])}
-										onclick={() => filterLight = toggleChip(filterLight, String(opt))}>
-										{t[`lightConditions_${opt}` as keyof typeof t] ?? opt}
-									</button>
-								{/each}
-							</div>
-						{/if}
+					</div>
+				{/if}
+
+				{#if lights.length > 0}
+					<div style="display:flex; align-items:flex-start; gap:10px;">
+						<span style="min-width:88px; text-align:right; font-size:0.7rem; color:#3d6a84; font-weight:500; padding-top:4px; flex-shrink:0;">{t.lightConditions}</span>
+						<div style="display:flex; flex-wrap:wrap; gap:5px;">
+							{#each lights as opt}
+								<button style={chipStyle(filterLight[String(opt)])} title={chipTitle(filterLight[String(opt)])}
+									onclick={() => filterLight = toggleChip(filterLight, String(opt))}>
+									{t[`lightConditions_${opt}` as keyof typeof t] ?? opt}
+								</button>
+							{/each}
+						</div>
 					</div>
 				{/if}
 
