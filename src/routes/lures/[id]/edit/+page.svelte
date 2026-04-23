@@ -195,8 +195,8 @@
 		<!-- Size + Running Depth -->
 		<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
 			<div>
-				<label style={labelStyle} for="size">{t.size}</label>
-				<input id="size" name="size" type="text" value={lure.size ?? ''}
+				<label style={labelStyle} for="size">{t.size} (cm)</label>
+				<input id="size" name="size" type="number" min="0" step="0.1" value={lure.size ?? ''}
 					style={inputStyle} onfocus={focusInput} onblur={blurInput} />
 			</div>
 			<div>
@@ -250,14 +250,14 @@
 			</div>
 		</div>
 
-		<!-- Tags + Species -->
-		<div>
-			<label style={labelStyle}>{t.tags}</label>
-			<TagInput name="tags" value={lure.tags.map((tag) => tag.name).join(' ')} />
-		</div>
+		<!-- Species + Tags -->
 		<div>
 			<label style={labelStyle}>{t.fishSpecies}</label>
 			<TagInput name="species" value={lure.species ?? ''} suggest={suggestions.species} />
+		</div>
+		<div>
+			<label style={labelStyle}>{t.tags}</label>
+			<TagInput name="tags" value={lure.tags.map((tag) => tag.name).join(' ')} />
 		</div>
 
 		<!-- Notes -->

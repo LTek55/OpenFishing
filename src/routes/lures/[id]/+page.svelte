@@ -132,18 +132,6 @@
 			<!-- Divider -->
 			<div style="height:1px; background:#172f4a; margin:0 0 16px;"></div>
 
-			<!-- Species -->
-			{#if lure.species}
-				<div style="margin-bottom:14px;">
-					<p style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin:0 0 8px;">{t.fishSpecies}</p>
-					<div style="display:flex; flex-wrap:wrap; gap:6px;">
-						{#each lure.species.split(/\s+/).filter(Boolean) as s}
-							<span style="font-size:0.78rem; padding:3px 10px; border-radius:20px; background:rgba(6,182,212,0.1); color:#22d3ee; border:1px solid rgba(6,182,212,0.2); font-weight:500;">{s}</span>
-						{/each}
-					</div>
-				</div>
-			{/if}
-
 			<!-- Tags -->
 			{#if lure.tags.length > 0}
 				<div style="margin-bottom:14px;">
@@ -151,6 +139,18 @@
 					<div style="display:flex; flex-wrap:wrap; gap:6px;">
 						{#each lure.tags as tag (tag.id)}
 							<span style="font-size:0.78rem; padding:3px 10px; border-radius:20px; background:rgba(74,222,128,0.08); color:#4ade80; border:1px solid rgba(74,222,128,0.15); font-weight:500;">{tag.name}</span>
+						{/each}
+					</div>
+				</div>
+			{/if}
+
+			<!-- Species -->
+			{#if lure.species}
+				<div style="margin-bottom:14px;">
+					<p style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin:0 0 8px;">{t.fishSpecies}</p>
+					<div style="display:flex; flex-wrap:wrap; gap:6px;">
+						{#each lure.species.split(/\s+/).filter(Boolean) as s}
+							<span style="font-size:0.78rem; padding:3px 10px; border-radius:20px; background:rgba(6,182,212,0.1); color:#22d3ee; border:1px solid rgba(6,182,212,0.2); font-weight:500;">{s}</span>
 						{/each}
 					</div>
 				</div>

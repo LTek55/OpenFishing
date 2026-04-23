@@ -15,6 +15,14 @@
 	let filterLight      = $state<ChipFilter>({});
 	let filterSpecies    = $state<ChipFilter>({});
 	let filterFavourites = $state(false);
+	let filterHasCatch   = $state(false);
+
+	const lureIdsWithCatches = new Set(data.lureIdsWithCatches);
+	let filterSizeMin    = $state('');
+	let filterSizeMax    = $state('');
+	let filterWeightMin  = $state('');
+	let filterWeightMax  = $state('');
+	let filtersExpanded  = $state(false);
 
 	let favourites = $state<Record<string, boolean>>(
 		Object.fromEntries(data.lures.map(l => [l.id, l.favourite]))
@@ -30,15 +38,28 @@
 		...new Set(data.lures.flatMap(l => l.species ? l.species.split(' ').filter(Boolean) : []))
 	].sort() as string[]);
 
+	const hasSizes   = $derived(data.lures.some(l => l.size !== null && l.size !== '' && !isNaN(parseFloat(l.size!))));
+	const hasWeights = $derived(data.lures.some(l => l.weight !== null));
+
+	const activeFilterCount = $derived(
+		Object.keys(filterType).length + Object.keys(filterDepth).length +
+		Object.keys(filterLight).length + Object.keys(filterSpecies).length +
+		(filterFavourites ? 1 : 0) + (filterHasCatch ? 1 : 0) +
+		(filterSizeMin !== '' ? 1 : 0) + (filterSizeMax !== '' ? 1 : 0) +
+		(filterWeightMin !== '' ? 1 : 0) + (filterWeightMax !== '' ? 1 : 0)
+	);
+
 	const hasAnyOptions = $derived(
-		types.length > 0 || depths.length > 0 || lights.length > 0 || species.length > 0
+		types.length > 0 || depths.length > 0 || lights.length > 0 || species.length > 0 || hasSizes || hasWeights
 	);
 	const anyActive = $derived(
 		!!search ||
-		filterFavourites ||
+		filterFavourites || filterHasCatch ||
 		Object.keys(filterType).length > 0 ||
 		Object.keys(filterDepth).length > 0 || Object.keys(filterLight).length > 0 ||
-		Object.keys(filterSpecies).length > 0
+		Object.keys(filterSpecies).length > 0 ||
+		filterSizeMin !== '' || filterSizeMax !== '' ||
+		filterWeightMin !== '' || filterWeightMax !== ''
 	);
 
 	function toggleChip(current: ChipFilter, value: string): ChipFilter {
@@ -75,10 +96,20 @@
 
 	const filtered = $derived(data.lures.filter(l => {
 		if (filterFavourites && !favourites[l.id])           return false;
+		if (filterHasCatch   && !lureIdsWithCatches.has(l.id)) return false;
 		if (!passesFilter(l.type,             filterType))   return false;
 		if (!passesFilter(l.runningDepth,     filterDepth))  return false;
 		if (!passesFilter(l.lightConditions != null ? String(l.lightConditions) : null, filterLight)) return false;
 		if (!passesSpeciesFilter(l.species, filterSpecies)) return false;
+
+		if (filterSizeMin !== '' || filterSizeMax !== '') {
+			const sz = l.size !== null && l.size !== '' ? parseFloat(l.size!) : null;
+			if (filterSizeMin !== '') { const mn = parseFloat(filterSizeMin); if (!isNaN(mn) && (sz === null || sz < mn)) return false; }
+			if (filterSizeMax !== '') { const mx = parseFloat(filterSizeMax); if (!isNaN(mx) && (sz === null || sz > mx)) return false; }
+		}
+		if (filterWeightMin !== '') { const mn = parseFloat(filterWeightMin); if (!isNaN(mn) && (l.weight === null || l.weight < mn)) return false; }
+		if (filterWeightMax !== '') { const mx = parseFloat(filterWeightMax); if (!isNaN(mx) && (l.weight === null || l.weight > mx)) return false; }
+
 		if (search) {
 			const q = search.toLowerCase();
 			return (
@@ -96,14 +127,17 @@
 	const pageItems   = $derived(filtered.slice((pageClamped - 1) * pageSize, pageClamped * pageSize));
 
 	$effect(() => {
-		search; filterFavourites; filterType; filterDepth; filterLight; filterSpecies; pageSize;
+		search; filterFavourites; filterHasCatch; filterType; filterDepth; filterLight; filterSpecies;
+		filterSizeMin; filterSizeMax; filterWeightMin; filterWeightMax; pageSize;
 		page = 1;
 	});
 
 	function clearAll() {
 		search = '';
 		filterFavourites = false;
+		filterHasCatch = false;
 		filterType = {}; filterDepth = {}; filterLight = {}; filterSpecies = {};
+		filterSizeMin = ''; filterSizeMax = ''; filterWeightMin = ''; filterWeightMax = '';
 	}
 
 	async function toggleFavourite(id: string, e: MouseEvent) {
@@ -158,8 +192,27 @@
 			/>
 		</div>
 
-		<!-- Include / Exclude chip filters -->
+		<!-- Filter toggle -->
 		{#if hasAnyOptions}
+			<div style="display:flex; justify-content:center; margin:-4px 0 -4px;">
+				<button
+					onclick={() => filtersExpanded = !filtersExpanded}
+					style="display:inline-flex; align-items:center; gap:5px; background:none; border:none; cursor:pointer; color:#3d6a84; padding:3px 10px; border-radius:8px; transition:color 0.15s; font-family:'DM Sans',sans-serif;"
+					onmouseenter={function(e){(e.currentTarget as HTMLElement).style.color='#5d8fa8';}}
+					onmouseleave={function(e){(e.currentTarget as HTMLElement).style.color='#3d6a84';}}
+				>
+					{#if !filtersExpanded && activeFilterCount > 0}
+						<span style="font-size:0.68rem; font-weight:600; background:rgba(6,182,212,0.15); color:#22d3ee; border:1px solid rgba(6,182,212,0.35); border-radius:20px; padding:1px 7px; line-height:1.5;">{activeFilterCount}</span>
+					{/if}
+					<svg width="14" height="14" viewBox="0 0 14 14" fill="none"
+						style="transform:rotate({filtersExpanded ? '180deg' : '0deg'}); transition:transform 0.2s; flex-shrink:0;">
+						<path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</button>
+			</div>
+
+			<!-- Expanded filter rows -->
+			{#if filtersExpanded}
 			<div style="display:flex; flex-direction:column; gap:6px;">
 
 				{#if types.length > 0}
@@ -214,6 +267,38 @@
 					</div>
 				{/if}
 
+				<!-- Size range -->
+				{#if hasSizes}
+					<div style="display:flex; align-items:center; gap:10px;">
+						<span style="min-width:88px; text-align:right; font-size:0.7rem; color:#3d6a84; font-weight:500; flex-shrink:0;">{t.size} (cm)</span>
+						<div style="display:flex; align-items:center; gap:5px;">
+							<input type="number" min="0" step="0.1" placeholder={t.filterFrom} class="no-spin"
+								bind:value={filterSizeMin}
+								style="width:66px; padding:4px 7px; background:#0f2238; border:1px solid {filterSizeMin !== '' ? 'rgba(6,182,212,0.5)' : '#243f5e'}; border-radius:8px; color:{filterSizeMin !== '' ? '#22d3ee' : '#8ab8cc'}; font-size:0.72rem; outline:none; font-family:'JetBrains Mono',monospace; box-sizing:border-box;" />
+							<span style="color:#3d6a84; font-size:0.72rem; flex-shrink:0;">—</span>
+							<input type="number" min="0" step="0.1" placeholder={t.filterTo} class="no-spin"
+								bind:value={filterSizeMax}
+								style="width:66px; padding:4px 7px; background:#0f2238; border:1px solid {filterSizeMax !== '' ? 'rgba(6,182,212,0.5)' : '#243f5e'}; border-radius:8px; color:{filterSizeMax !== '' ? '#22d3ee' : '#8ab8cc'}; font-size:0.72rem; outline:none; font-family:'JetBrains Mono',monospace; box-sizing:border-box;" />
+						</div>
+					</div>
+				{/if}
+
+				<!-- Weight range -->
+				{#if hasWeights}
+					<div style="display:flex; align-items:center; gap:10px;">
+						<span style="min-width:88px; text-align:right; font-size:0.7rem; color:#3d6a84; font-weight:500; flex-shrink:0;">{t.weightG}</span>
+						<div style="display:flex; align-items:center; gap:5px;">
+							<input type="number" min="0" step="0.1" placeholder={t.filterFrom} class="no-spin"
+								bind:value={filterWeightMin}
+								style="width:66px; padding:4px 7px; background:#0f2238; border:1px solid {filterWeightMin !== '' ? 'rgba(6,182,212,0.5)' : '#243f5e'}; border-radius:8px; color:{filterWeightMin !== '' ? '#22d3ee' : '#8ab8cc'}; font-size:0.72rem; outline:none; font-family:'JetBrains Mono',monospace; box-sizing:border-box;" />
+							<span style="color:#3d6a84; font-size:0.72rem; flex-shrink:0;">—</span>
+							<input type="number" min="0" step="0.1" placeholder={t.filterTo} class="no-spin"
+								bind:value={filterWeightMax}
+								style="width:66px; padding:4px 7px; background:#0f2238; border:1px solid {filterWeightMax !== '' ? 'rgba(6,182,212,0.5)' : '#243f5e'}; border-radius:8px; color:{filterWeightMax !== '' ? '#22d3ee' : '#8ab8cc'}; font-size:0.72rem; outline:none; font-family:'JetBrains Mono',monospace; box-sizing:border-box;" />
+						</div>
+					</div>
+				{/if}
+
 				<!-- Favourites row -->
 				<div style="display:flex; align-items:center; gap:10px;">
 					<span style="min-width:88px; text-align:right; font-size:0.7rem; color:#3d6a84; font-weight:500; flex-shrink:0;">{t.filterFavourites}</span>
@@ -227,7 +312,24 @@
 					</button>
 				</div>
 
+				<!-- Has Catch row -->
+				<div style="display:flex; align-items:center; gap:10px;">
+					<span style="min-width:88px; text-align:right; font-size:0.7rem; color:#3d6a84; font-weight:500; flex-shrink:0;">{t.filterHasCatch}</span>
+					<button
+						onclick={() => filterHasCatch = !filterHasCatch}
+						style="display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; padding:3px 10px; border-radius:20px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background 0.12s, border-color 0.12s, color 0.12s; border-style:solid; border-width:1px; line-height:1.5; {filterHasCatch ? 'background:rgba(6,182,212,0.1); border-color:rgba(6,182,212,0.4); color:#22d3ee;' : 'background:transparent; border-color:#1e3a56; color:#3d6a84;'}"
+					>
+						<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M18 6.5C18 6.5 16 4 12 4C8 4 4 7 4 12C4 17 8 20 12 20C16 20 18 17.5 18 17.5"/>
+							<path d="M18 12H22"/>
+							<path d="M20 10L22 12L20 14"/>
+							<circle cx="9" cy="11" r="1" fill="currentColor"/>
+						</svg>
+					</button>
+				</div>
+
 			</div>
+			{/if}
 		{/if}
 
 		<!-- Active filter summary -->
@@ -401,3 +503,15 @@
 		{/if}
 	{/if}
 </div>
+
+<style>
+	input.no-spin::-webkit-outer-spin-button,
+	input.no-spin::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+	input.no-spin[type=number] {
+		-moz-appearance: textfield;
+		appearance: textfield;
+	}
+</style>

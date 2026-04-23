@@ -185,8 +185,8 @@
 		<!-- Size + Weight -->
 		<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
 			<div>
-				<label style={labelStyle} for="size">{t.size}</label>
-				<input id="size" name="size" type="text" placeholder="e.g. 7cm"
+				<label style={labelStyle} for="size">{t.size} (cm)</label>
+				<input id="size" name="size" type="number" min="0" step="0.1"
 					style={inputStyle} onfocus={focusInput} onblur={blurInput} />
 			</div>
 			<div>
@@ -196,11 +196,11 @@
 			</div>
 		</div>
 
-		<!-- Fish Species + Running Depth -->
+		<!-- Tags + Running Depth -->
 		<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
 			<div>
-				<label style={labelStyle}>{t.fishSpecies}</label>
-				<TagInput name="species" suggest={data.suggestions.species} />
+				<label style={labelStyle}>{t.tags}</label>
+				<TagInput name="tags" />
 			</div>
 			<div>
 				<label style={labelStyle} for="running_depth">{t.runningDepth}</label>
@@ -253,10 +253,10 @@
 			</div>
 		</div>
 
-		<!-- Tags -->
+		<!-- Fish Species -->
 		<div>
-			<label style={labelStyle}>{t.tags}</label>
-			<TagInput name="tags" />
+			<label style={labelStyle}>{t.fishSpecies}</label>
+			<TagInput name="species" suggest={data.suggestions.species} />
 		</div>
 
 		<!-- Notes -->
