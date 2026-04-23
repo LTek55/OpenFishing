@@ -10,6 +10,7 @@
 	let uploadInput: HTMLInputElement;
 	let cameraInput: HTMLInputElement;
 	let previewUrl = $state<string | null>(null);
+	let lightValue = $state<number | null>(null);
 	let photoError = $state(false);
 	let showCrop = $state(false);
 	let cropSrc = $state<string | null>(null);
@@ -90,9 +91,6 @@
 	</datalist>
 	<datalist id="suggest-colors">
 		{#each data.suggestions.colors as color}<option value={color}></option>{/each}
-	</datalist>
-	<datalist id="suggest-light-conditions">
-		{#each data.suggestions.lightConditions as w}<option value={w}></option>{/each}
 	</datalist>
 
 	<!-- Trigger-only inputs -->
@@ -228,9 +226,30 @@
 				</select>
 			</div>
 			<div>
-				<label style={labelStyle} for="light_conditions">{t.lightConditions}</label>
-				<input id="light_conditions" name="light_conditions" type="text" list="suggest-light-conditions" placeholder="e.g. Sunny"
-					style={inputStyle} onfocus={focusInput} onblur={blurInput} />
+				<div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px;">
+					<label style="font-size:0.78rem; font-weight:500; color:#5d8fa8; text-transform:uppercase; letter-spacing:0.06em;" for="light_conditions">{t.lightConditions}</label>
+					{#if lightValue !== null}
+						<span style="font-size:0.82rem; font-weight:600; color:#22d3ee;">{t[`lightConditions_${lightValue}` as keyof typeof t]}</span>
+					{/if}
+				</div>
+				<input type="hidden" name="light_conditions" value={lightValue !== null ? String(lightValue) : ''} />
+				{#if lightValue !== null}
+					<input id="light_conditions" type="range" min="0" max="10" step="1"
+						value={lightValue}
+						oninput={(e) => lightValue = Number((e.target as HTMLInputElement).value)}
+						style="width:100%; accent-color:#06b6d4; cursor:pointer; margin-bottom:4px;" />
+					<div style="display:flex; justify-content:space-between; font-size:0.68rem; color:#3d6a84;">
+						<span>{t.lightConditions_0}</span>
+						<span>{t.lightConditions_10}</span>
+					</div>
+				{:else}
+					<button type="button" onclick={() => lightValue = 5}
+						style="width:100%; padding:8px 12px; background:transparent; border:1px dashed #243f5e; border-radius:9px; color:#3d6a84; font-size:0.82rem; font-family:'DM Sans',sans-serif; cursor:pointer; text-align:left; transition:border-color 0.15s, color 0.15s;"
+						onmouseenter={(e) => { (e.target as HTMLElement).style.borderColor='#3d6a84'; (e.target as HTMLElement).style.color='#5d8fa8'; }}
+						onmouseleave={(e) => { (e.target as HTMLElement).style.borderColor='#243f5e'; (e.target as HTMLElement).style.color='#3d6a84'; }}>
+						＋ {t.lightConditions}
+					</button>
+				{/if}
 			</div>
 		</div>
 

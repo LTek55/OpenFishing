@@ -100,10 +100,10 @@
 						<dd style="font-weight:600; color:#e0eaf8; margin:0;">{waterTypeLabels[lure.waterType] ?? lure.waterType}</dd>
 					</div>
 				{/if}
-				{#if lure.lightConditions}
+				{#if lure.lightConditions != null}
 					<div>
 						<dt style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin-bottom:3px;">{t.lightConditions}</dt>
-						<dd style="font-weight:600; color:#e0eaf8; margin:0;">{lure.lightConditions}</dd>
+						<dd style="font-weight:600; color:#e0eaf8; margin:0;">{t[`lightConditions_${lure.lightConditions}` as keyof typeof t] ?? lure.lightConditions}</dd>
 					</div>
 				{/if}
 			</dl>

@@ -6,38 +6,72 @@
 
 	const PAGE_SIZES = [4, 8, 16, 32, 50, 100];
 
-	// Filter state
-	let search   = $state('');
-	let fType    = $state('');
-	let fBrand   = $state('');
-	let fColor   = $state('');
-	let fWater   = $state('');
-	let fDepth   = $state('');
-	let fSpecies = $state('');
+	type ChipMode = 'include' | 'exclude';
+	type ChipFilter = Record<string, ChipMode>;
 
-	// Pagination state
+	let search        = $state('');
+	let filterType    = $state<ChipFilter>({});
+	let filterDepth   = $state<ChipFilter>({});
+	let filterLight   = $state<ChipFilter>({});
+	let filterSpecies = $state<ChipFilter>({});
+
 	let page     = $state(1);
 	let pageSize = $state(16);
 
-	// Distinct option lists
-	const types   = $derived([...new Set(data.lures.map(l => l.type).filter(Boolean))].sort());
-	const brands  = $derived([...new Set(data.lures.map(l => l.brand).filter(Boolean))].sort());
-	const colors  = $derived([...new Set(data.lures.map(l => l.color).filter(Boolean))].sort());
-	const waters  = $derived([...new Set(data.lures.map(l => l.waterType).filter(Boolean))].sort());
-	const depths  = $derived([...new Set(data.lures.map(l => l.runningDepth).filter(Boolean))].sort());
+	const types   = $derived([...new Set(data.lures.map(l => l.type).filter(Boolean))].sort() as string[]);
+	const depths  = $derived([...new Set(data.lures.map(l => l.runningDepth).filter(Boolean))].sort() as string[]);
+	const lights  = $derived([...new Set(data.lures.map(l => l.lightConditions).filter(v => v != null))].sort((a, b) => (a as number) - (b as number)) as number[]);
 	const species = $derived([
 		...new Set(data.lures.flatMap(l => l.species ? l.species.split(' ').filter(Boolean) : []))
-	].sort());
+	].sort() as string[]);
 
-	const anyActive = $derived(search || fType || fBrand || fColor || fWater || fDepth || fSpecies);
+	const hasAnyOptions = $derived(
+		types.length > 0 || depths.length > 0 || lights.length > 0 || species.length > 0
+	);
+	const anyActive = $derived(
+		!!search ||
+		Object.keys(filterType).length > 0 ||
+		Object.keys(filterDepth).length > 0 || Object.keys(filterLight).length > 0 ||
+		Object.keys(filterSpecies).length > 0
+	);
+
+	function toggleChip(current: ChipFilter, value: string): ChipFilter {
+		const mode = current[value];
+		if (!mode) return { ...current, [value]: 'include' };
+		if (mode === 'include') return { ...current, [value]: 'exclude' };
+		const next = { ...current };
+		delete next[value];
+		return next;
+	}
+
+	// OR for includes (show if matches any), AND-NOT for excludes (hide if matches any)
+	function passesFilter(lureVal: string | null | undefined, f: ChipFilter): boolean {
+		const entries = Object.entries(f);
+		if (entries.length === 0) return true;
+		const val = lureVal ?? '';
+		const includes = entries.filter(([, m]) => m === 'include').map(([v]) => v);
+		const excludes = entries.filter(([, m]) => m === 'exclude').map(([v]) => v);
+		if (excludes.includes(val)) return false;
+		if (includes.length > 0 && !includes.includes(val)) return false;
+		return true;
+	}
+
+	function passesSpeciesFilter(lureSpeciesStr: string | null | undefined, f: ChipFilter): boolean {
+		const entries = Object.entries(f);
+		if (entries.length === 0) return true;
+		const lureSpecies = (lureSpeciesStr ?? '').split(' ').filter(Boolean);
+		const includes = entries.filter(([, m]) => m === 'include').map(([v]) => v);
+		const excludes = entries.filter(([, m]) => m === 'exclude').map(([v]) => v);
+		if (excludes.some(ex => lureSpecies.includes(ex))) return false;
+		if (includes.length > 0 && !includes.some(inc => lureSpecies.includes(inc))) return false;
+		return true;
+	}
 
 	const filtered = $derived(data.lures.filter(l => {
-		if (fType    && l.type         !== fType)    return false;
-		if (fBrand   && l.brand        !== fBrand)   return false;
-		if (fColor   && l.color        !== fColor)   return false;
-		if (fWater   && l.waterType    !== fWater)   return false;
-		if (fDepth   && l.runningDepth !== fDepth)   return false;
-		if (fSpecies && !(l.species ?? '').split(' ').includes(fSpecies)) return false;
+		if (!passesFilter(l.type,             filterType))   return false;
+		if (!passesFilter(l.runningDepth,     filterDepth))  return false;
+		if (!passesFilter(l.lightConditions != null ? String(l.lightConditions) : null, filterLight)) return false;
+		if (!passesSpeciesFilter(l.species, filterSpecies)) return false;
 		if (search) {
 			const q = search.toLowerCase();
 			return (
@@ -50,19 +84,31 @@
 		return true;
 	}));
 
-	const totalPages = $derived(Math.max(1, Math.ceil(filtered.length / pageSize)));
+	const totalPages  = $derived(Math.max(1, Math.ceil(filtered.length / pageSize)));
 	const pageClamped = $derived(Math.min(page, totalPages));
-	const pageItems = $derived(filtered.slice((pageClamped - 1) * pageSize, pageClamped * pageSize));
+	const pageItems   = $derived(filtered.slice((pageClamped - 1) * pageSize, pageClamped * pageSize));
 
-	// Reset to page 1 when filters or page size change
 	$effect(() => {
-		search; fType; fBrand; fColor; fWater; fDepth; fSpecies; pageSize;
+		search; filterType; filterDepth; filterLight; filterSpecies; pageSize;
 		page = 1;
 	});
 
 	function clearAll() {
-		search = ''; fType = ''; fBrand = ''; fColor = '';
-		fWater = ''; fDepth = ''; fSpecies = '';
+		search = '';
+		filterType = {}; filterDepth = {}; filterLight = {}; filterSpecies = {};
+	}
+
+	function chipStyle(mode: ChipMode | undefined): string {
+		const base = "font-size:0.72rem; padding:3px 10px; border-radius:20px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background 0.12s, border-color 0.12s, color 0.12s; line-height:1.5; white-space:nowrap; border-style:solid; border-width:1px;";
+		if (mode === 'include') return base + "background:rgba(6,182,212,0.12); border-color:rgba(6,182,212,0.45); color:#22d3ee;";
+		if (mode === 'exclude') return base + "background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.35); color:#f87171; text-decoration:line-through;";
+		return base + "background:transparent; border-color:#1e3a56; color:#3d6a84;";
+	}
+
+	function chipTitle(mode: ChipMode | undefined): string {
+		if (mode === 'include') return 'Click to exclude';
+		if (mode === 'exclude') return 'Click to clear';
+		return 'Click to include';
 	}
 
 	function padNum(n: number | null | undefined) {
@@ -92,57 +138,66 @@
 			/>
 		</div>
 
-		<!-- Dropdowns -->
-		{#if types.length > 0 || brands.length > 0 || colors.length > 0 || waters.length > 0 || depths.length > 0 || species.length > 0}
-			<div style="display:flex; gap:8px; flex-wrap:wrap;">
+		<!-- Include / Exclude chip filters -->
+		{#if hasAnyOptions}
+			<div style="display:flex; flex-direction:column; gap:6px;">
+
 				{#if types.length > 0}
-					<select bind:value={fType}
-						style="flex-shrink:0; font-size:0.875rem; padding:7px 12px; border-radius:9px; cursor:pointer; outline:none; font-family:'DM Sans',sans-serif; box-sizing:border-box; {fType ? 'background:#0f2238; border:1px solid rgba(6,182,212,0.5); color:#22d3ee;' : 'background:#0f2238; border:1px solid #243f5e; color:#c2dce8;'}">
-						<option value="">{t.type}: {t.filterAll}</option>
-						{#each types as o}<option value={o}>{o}</option>{/each}
-					</select>
+					<div style="display:flex; align-items:flex-start; gap:10px;">
+						<span style="min-width:88px; text-align:right; font-size:0.7rem; color:#3d6a84; font-weight:500; padding-top:4px; flex-shrink:0;">{t.type}</span>
+						<div style="display:flex; flex-wrap:wrap; gap:5px;">
+							{#each types as opt}
+								<button style={chipStyle(filterType[opt])} title={chipTitle(filterType[opt])}
+									onclick={() => filterType = toggleChip(filterType, opt)}>{opt}</button>
+							{/each}
+						</div>
+					</div>
 				{/if}
-				{#if brands.length > 0}
-					<select bind:value={fBrand}
-						style="flex-shrink:0; font-size:0.875rem; padding:7px 12px; border-radius:9px; cursor:pointer; outline:none; font-family:'DM Sans',sans-serif; box-sizing:border-box; {fBrand ? 'background:#0f2238; border:1px solid rgba(6,182,212,0.5); color:#22d3ee;' : 'background:#0f2238; border:1px solid #243f5e; color:#c2dce8;'}">
-						<option value="">{t.brand}: {t.filterAll}</option>
-						{#each brands as o}<option value={o}>{o}</option>{/each}
-					</select>
+
+				{#if depths.length > 0 || lights.length > 0}
+					<div style="display:flex; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+						<span style="min-width:88px; text-align:right; font-size:0.7rem; color:#3d6a84; font-weight:500; padding-top:4px; flex-shrink:0;">{t.runningDepth}</span>
+						<div style="display:flex; flex-wrap:wrap; gap:5px;">
+							{#each depths as opt}
+								<button style={chipStyle(filterDepth[opt])} title={chipTitle(filterDepth[opt])}
+									onclick={() => filterDepth = toggleChip(filterDepth, opt)}>
+									{(t[`runningDepth_${opt}` as keyof typeof t] as string) ?? opt}
+								</button>
+							{/each}
+						</div>
+						{#if lights.length > 0}
+							<span style="font-size:0.7rem; color:#243f5e; padding-top:4px; flex-shrink:0; user-select:none;">·</span>
+							<span style="font-size:0.7rem; color:#3d6a84; font-weight:500; padding-top:4px; flex-shrink:0;">{t.lightConditions}</span>
+							<div style="display:flex; flex-wrap:wrap; gap:5px;">
+								{#each lights as opt}
+									<button style={chipStyle(filterLight[String(opt)])} title={chipTitle(filterLight[String(opt)])}
+										onclick={() => filterLight = toggleChip(filterLight, String(opt))}>
+										{t[`lightConditions_${opt}` as keyof typeof t] ?? opt}
+									</button>
+								{/each}
+							</div>
+						{/if}
+					</div>
 				{/if}
-				{#if colors.length > 0}
-					<select bind:value={fColor}
-						style="flex-shrink:0; font-size:0.875rem; padding:7px 12px; border-radius:9px; cursor:pointer; outline:none; font-family:'DM Sans',sans-serif; box-sizing:border-box; {fColor ? 'background:#0f2238; border:1px solid rgba(6,182,212,0.5); color:#22d3ee;' : 'background:#0f2238; border:1px solid #243f5e; color:#c2dce8;'}">
-						<option value="">{t.color}: {t.filterAll}</option>
-						{#each colors as o}<option value={o}>{o}</option>{/each}
-					</select>
-				{/if}
-				{#if waters.length > 0}
-					<select bind:value={fWater}
-						style="flex-shrink:0; font-size:0.875rem; padding:7px 12px; border-radius:9px; cursor:pointer; outline:none; font-family:'DM Sans',sans-serif; box-sizing:border-box; {fWater ? 'background:#0f2238; border:1px solid rgba(6,182,212,0.5); color:#22d3ee;' : 'background:#0f2238; border:1px solid #243f5e; color:#c2dce8;'}">
-						<option value="">{t.waterType}: {t.filterAll}</option>
-						{#each waters as o}<option value={o}>{t[`waterType_${o}` as keyof typeof t] ?? o}</option>{/each}
-					</select>
-				{/if}
-				{#if depths.length > 0}
-					<select bind:value={fDepth}
-						style="flex-shrink:0; font-size:0.875rem; padding:7px 12px; border-radius:9px; cursor:pointer; outline:none; font-family:'DM Sans',sans-serif; box-sizing:border-box; {fDepth ? 'background:#0f2238; border:1px solid rgba(6,182,212,0.5); color:#22d3ee;' : 'background:#0f2238; border:1px solid #243f5e; color:#c2dce8;'}">
-						<option value="">{t.runningDepth}: {t.filterAll}</option>
-						{#each depths as o}<option value={o}>{t[`runningDepth_${o}` as keyof typeof t] ?? o}</option>{/each}
-					</select>
-				{/if}
+
 				{#if species.length > 0}
-					<select bind:value={fSpecies}
-						style="flex-shrink:0; font-size:0.875rem; padding:7px 12px; border-radius:9px; cursor:pointer; outline:none; font-family:'DM Sans',sans-serif; box-sizing:border-box; {fSpecies ? 'background:#0f2238; border:1px solid rgba(6,182,212,0.5); color:#22d3ee;' : 'background:#0f2238; border:1px solid #243f5e; color:#c2dce8;'}">
-						<option value="">{t.fishSpecies}: {t.filterAll}</option>
-						{#each species as o}<option value={o}>{o}</option>{/each}
-					</select>
+					<div style="display:flex; align-items:flex-start; gap:10px;">
+						<span style="min-width:88px; text-align:right; font-size:0.7rem; color:#3d6a84; font-weight:500; padding-top:4px; flex-shrink:0;">{t.fishSpecies}</span>
+						<div style="display:flex; flex-wrap:wrap; gap:5px;">
+							{#each species as opt}
+								<button style={chipStyle(filterSpecies[opt])} title={chipTitle(filterSpecies[opt])}
+									onclick={() => filterSpecies = toggleChip(filterSpecies, opt)}>{opt}</button>
+							{/each}
+						</div>
+					</div>
 				{/if}
+
 			</div>
 		{/if}
 
 		<!-- Active filter summary -->
 		{#if anyActive}
-			<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.8rem;">
+			<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.8rem; padding-top:2px; border-top:1px solid #172f4a;">
 				<span style="color:#3d6a84;">
 					{filtered.length}
 					{filtered.length === 1 ? t.lure_singular : t.lure_plural}

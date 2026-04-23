@@ -64,6 +64,13 @@
       "when": 1776894103875,
       "tag": "0008_known_kingpin",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1776926655957,
+      "tag": "0009_dusty_red_hulk",
+      "breakpoints": true
     }
   ]
 }

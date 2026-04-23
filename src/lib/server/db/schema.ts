@@ -17,7 +17,7 @@ export const lure = sqliteTable('lure', {
 	species: text('species'),
 	runningDepth: text('running_depth'),
 	waterType: text('water_type'),
-	lightConditions: text('light_conditions'),
+	lightConditions: integer('light_conditions'),
 	qrCoded: integer('qr_coded', { mode: 'boolean' }).notNull().default(false),
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
