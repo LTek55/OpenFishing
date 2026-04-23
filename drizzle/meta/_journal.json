@@ -71,6 +71,13 @@
       "when": 1776926655957,
       "tag": "0009_dusty_red_hulk",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1776928310806,
+      "tag": "0010_broken_james_howlett",
+      "breakpoints": true
     }
   ]
 }
