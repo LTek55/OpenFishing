@@ -194,17 +194,23 @@
 
 		<!-- Filter toggle -->
 		{#if hasAnyOptions}
-			<div style="display:flex; justify-content:center; margin:-4px 0 -4px;">
+			<div style="display:flex; justify-content:center;">
 				<button
 					onclick={() => filtersExpanded = !filtersExpanded}
-					style="display:inline-flex; align-items:center; gap:5px; background:none; border:none; cursor:pointer; color:#3d6a84; padding:3px 10px; border-radius:8px; transition:color 0.15s; font-family:'DM Sans',sans-serif;"
-					onmouseenter={function(e){(e.currentTarget as HTMLElement).style.color='#5d8fa8';}}
-					onmouseleave={function(e){(e.currentTarget as HTMLElement).style.color='#3d6a84';}}
+					style="display:inline-flex; align-items:center; gap:6px; background:#0f2238; border:1px solid {filtersExpanded || activeFilterCount > 0 ? 'rgba(6,182,212,0.45)' : '#243f5e'}; color:{filtersExpanded || activeFilterCount > 0 ? '#22d3ee' : '#8ab8cc'}; padding:6px 14px; border-radius:20px; cursor:pointer; font-size:0.82rem; font-weight:500; transition:all 0.15s; font-family:'DM Sans',sans-serif;"
+					onmouseenter={function(e){(e.currentTarget as HTMLElement).style.borderColor='rgba(6,182,212,0.45)'; (e.currentTarget as HTMLElement).style.color='#22d3ee';}}
+					onmouseleave={function(e){(e.currentTarget as HTMLElement).style.borderColor=filtersExpanded||activeFilterCount>0?'rgba(6,182,212,0.45)':'#243f5e'; (e.currentTarget as HTMLElement).style.color=filtersExpanded||activeFilterCount>0?'#22d3ee':'#8ab8cc';}}
 				>
-					{#if !filtersExpanded && activeFilterCount > 0}
-						<span style="font-size:0.68rem; font-weight:600; background:rgba(6,182,212,0.15); color:#22d3ee; border:1px solid rgba(6,182,212,0.35); border-radius:20px; padding:1px 7px; line-height:1.5;">{activeFilterCount}</span>
+					<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;">
+						<line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+						<line x1="8" y1="12" x2="16" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+						<line x1="11" y1="18" x2="13" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+					</svg>
+					{t.filterButton}
+					{#if activeFilterCount > 0}
+						<span style="font-size:0.68rem; font-weight:700; background:rgba(6,182,212,0.2); color:#22d3ee; border:1px solid rgba(6,182,212,0.4); border-radius:20px; padding:1px 7px; line-height:1.5;">{activeFilterCount}</span>
 					{/if}
-					<svg width="14" height="14" viewBox="0 0 14 14" fill="none"
+					<svg width="12" height="12" viewBox="0 0 14 14" fill="none"
 						style="transform:rotate({filtersExpanded ? '180deg' : '0deg'}); transition:transform 0.2s; flex-shrink:0;">
 						<path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 					</svg>

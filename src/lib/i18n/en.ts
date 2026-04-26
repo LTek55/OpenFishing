@@ -40,6 +40,7 @@ export default {
 	filterAll: 'All',
 	filterFavourites: 'Favourites',
 	filterHasCatch: 'Has Catch',
+	filterButton: 'Filters',
 	filterActive: 'filters',
 	filterFrom: 'from',
 	filterTo: 'to',
