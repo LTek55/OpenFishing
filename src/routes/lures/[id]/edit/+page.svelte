@@ -178,8 +178,8 @@
 			</div>
 		</div>
 
-		<!-- Color + Weight -->
-		<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+		<!-- Color + Weight + Amount -->
+		<div style="display:grid; grid-template-columns:1fr 1fr 0.65fr; gap:16px;">
 			<div>
 				<label style={labelStyle} for="color">{t.color}</label>
 				<input id="color" name="color" type="text" list="suggest-colors" value={lure.color ?? ''}
@@ -188,6 +188,11 @@
 			<div>
 				<label style={labelStyle} for="weight">{t.weightG}</label>
 				<input id="weight" name="weight" type="number" min="0" step="0.1" value={lure.weight ?? ''}
+					style={inputStyle} onfocus={focusInput} onblur={blurInput} />
+			</div>
+			<div>
+				<label style={labelStyle} for="amount">{t.amount}</label>
+				<input id="amount" name="amount" type="number" min="1" step="1" value={lure.amount ?? 1}
 					style={inputStyle} onfocus={focusInput} onblur={blurInput} />
 			</div>
 		</div>

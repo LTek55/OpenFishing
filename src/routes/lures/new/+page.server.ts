@@ -48,6 +48,8 @@ export const actions: Actions = {
 		const waterType = (data.get('water_type') as string)?.trim() || null;
 		const lightRaw = (data.get('light_conditions') as string)?.trim();
 		const lightConditions = lightRaw !== '' && lightRaw != null ? parseInt(lightRaw, 10) : null;
+		const amountRaw = (data.get('amount') as string)?.trim();
+		const amount = amountRaw ? Math.max(1, parseInt(amountRaw, 10)) : 1;
 
 		const photoFile = data.get('photo') as File;
 		if (!photoFile || photoFile.size === 0) return fail(400, { error: 'photoRequired' });
@@ -58,7 +60,7 @@ export const actions: Actions = {
 
 		const [newLure] = await db
 			.insert(lure)
-			.values({ name, brand, type, color, weight, size, notes, photoPath, species, runningDepth, waterType, lightConditions, lureNumber })
+			.values({ name, brand, type, color, weight, size, notes, photoPath, species, runningDepth, waterType, lightConditions, amount, lureNumber })
 			.returning();
 
 		if (tagsRaw) {

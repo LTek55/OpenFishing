@@ -1,0 +1,1 @@
+ALTER TABLE `lure` ADD `amount` integer DEFAULT 1 NOT NULL;

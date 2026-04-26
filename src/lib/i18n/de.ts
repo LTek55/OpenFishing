@@ -64,6 +64,7 @@ export default {
 	type: 'Typ',
 	color: 'Farbe',
 	weightG: 'Gewicht (g)',
+	amount: 'Anzahl',
 	size: 'Größe',
 	tags: 'Tags',
 	fishSpecies: 'Zielfisch',

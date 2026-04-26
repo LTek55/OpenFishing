@@ -56,6 +56,8 @@ export const actions: Actions = {
 		const waterType = (data.get('water_type') as string)?.trim() || null;
 		const lightRaw = (data.get('light_conditions') as string)?.trim();
 		const lightConditions = lightRaw !== '' && lightRaw != null ? parseInt(lightRaw, 10) : null;
+		const amountRaw = (data.get('amount') as string)?.trim();
+		const amount = amountRaw ? Math.max(1, parseInt(amountRaw, 10)) : 1;
 		const qrCoded = data.getAll('qr_coded').includes('1');
 
 		const photoFile = data.get('photo') as File;
@@ -77,7 +79,7 @@ export const actions: Actions = {
 
 		await db
 			.update(lure)
-			.set({ name, brand, type, color, weight, size, notes, photoPath, species, runningDepth, waterType, lightConditions, qrCoded, updatedAt: new Date() })
+			.set({ name, brand, type, color, weight, size, notes, photoPath, species, runningDepth, waterType, lightConditions, amount, qrCoded, updatedAt: new Date() })
 			.where(eq(lure.id, params.id));
 
 		await db.delete(tag).where(eq(tag.lureId, params.id));

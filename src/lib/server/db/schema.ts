@@ -18,6 +18,7 @@ export const lure = sqliteTable('lure', {
 	runningDepth: text('running_depth'),
 	waterType: text('water_type'),
 	lightConditions: integer('light_conditions'),
+	amount: integer('amount').notNull().default(1),
 	favourite: integer('favourite', { mode: 'boolean' }).notNull().default(false),
 	qrCoded: integer('qr_coded', { mode: 'boolean' }).notNull().default(false),
 	lost: integer('lost', { mode: 'boolean' }).notNull().default(false),

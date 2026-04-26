@@ -182,8 +182,8 @@
 			</div>
 		</div>
 
-		<!-- Size + Weight -->
-		<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+		<!-- Size + Weight + Amount -->
+		<div style="display:grid; grid-template-columns:1fr 1fr 0.65fr; gap:16px;">
 			<div>
 				<label style={labelStyle} for="size">{t.size} (cm)</label>
 				<input id="size" name="size" type="number" min="0" step="0.1"
@@ -192,6 +192,11 @@
 			<div>
 				<label style={labelStyle} for="weight">{t.weightG}</label>
 				<input id="weight" name="weight" type="number" min="0" step="0.1" placeholder="e.g. 7"
+					style={inputStyle} onfocus={focusInput} onblur={blurInput} />
+			</div>
+			<div>
+				<label style={labelStyle} for="amount">{t.amount}</label>
+				<input id="amount" name="amount" type="number" min="1" step="1" value="1"
 					style={inputStyle} onfocus={focusInput} onblur={blurInput} />
 			</div>
 		</div>

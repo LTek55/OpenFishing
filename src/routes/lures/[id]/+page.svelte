@@ -103,6 +103,12 @@
 						<dd style="font-weight:600; color:#e0eaf8; margin:0;">{lure.weight}g</dd>
 					</div>
 				{/if}
+				{#if lure.amount > 1}
+					<div>
+						<dt style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin-bottom:3px;">{t.amount}</dt>
+						<dd style="font-weight:600; color:#e0eaf8; margin:0;">×{lure.amount}</dd>
+					</div>
+				{/if}
 				{#if lure.size}
 					<div>
 						<dt style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#3d6a84; margin-bottom:3px;">{t.size}</dt>

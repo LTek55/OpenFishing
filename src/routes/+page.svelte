@@ -417,10 +417,19 @@
 							</div>
 						{/if}
 
-						<!-- Lure number badge -->
-						{#if lure.lureNumber != null}
-							<div style="position:absolute; top:8px; left:8px; background:rgba(3,10,18,0.45); border:1px solid rgba(6,182,212,0.25); border-radius:6px; padding:2px 7px; backdrop-filter:blur(6px);">
-								<span style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:600; color:#7dd3fc; letter-spacing:0.05em;">{padNum(lure.lureNumber)}</span>
+						<!-- Lure number + amount badge -->
+						{#if lure.lureNumber != null || lure.amount > 1}
+							<div style="position:absolute; top:8px; left:8px; display:flex; gap:4px; align-items:center;">
+								{#if lure.lureNumber != null}
+									<div style="background:rgba(3,10,18,0.45); border:1px solid rgba(6,182,212,0.25); border-radius:6px; padding:2px 7px; backdrop-filter:blur(6px);">
+										<span style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:600; color:#7dd3fc; letter-spacing:0.05em;">{padNum(lure.lureNumber)}</span>
+									</div>
+								{/if}
+								{#if lure.amount > 1}
+									<div style="background:rgba(3,10,18,0.45); border:1px solid rgba(245,158,11,0.35); border-radius:6px; padding:2px 7px; backdrop-filter:blur(6px);">
+										<span style="font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:600; color:#fbbf24; letter-spacing:0.05em;">×{lure.amount}</span>
+									</div>
+								{/if}
 							</div>
 						{/if}
 
