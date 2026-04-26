@@ -142,6 +142,11 @@
 					style="font-size:0.8rem; border:1px solid #243f5e; border-radius:8px; padding:5px 8px; background:#0f2238; color:#8ab8cc; cursor:pointer; outline:none;">
 					<option value="en" selected={lang === 'en'}>🇬🇧 EN</option>
 					<option value="de" selected={lang === 'de'}>🇩🇪 DE</option>
+					<option value="nl" selected={lang === 'nl'}>🇳🇱 NL</option>
+					<option value="fr" selected={lang === 'fr'}>🇫🇷 FR</option>
+					<option value="es" selected={lang === 'es'}>🇪🇸 ES</option>
+					<option value="it" selected={lang === 'it'}>🇮🇹 IT</option>
+					<option value="pt" selected={lang === 'pt'}>🇵🇹 PT</option>
 				</select>
 			</form>
 		</div>
@@ -207,6 +212,11 @@
 					style="font-size:0.78rem; border:1px solid #243f5e; border-radius:7px; padding:4px 7px; background:#0f2238; color:#8ab8cc; cursor:pointer; outline:none;">
 					<option value="en" selected={lang === 'en'}>🇬🇧 EN</option>
 					<option value="de" selected={lang === 'de'}>🇩🇪 DE</option>
+					<option value="nl" selected={lang === 'nl'}>🇳🇱 NL</option>
+					<option value="fr" selected={lang === 'fr'}>🇫🇷 FR</option>
+					<option value="es" selected={lang === 'es'}>🇪🇸 ES</option>
+					<option value="it" selected={lang === 'it'}>🇮🇹 IT</option>
+					<option value="pt" selected={lang === 'pt'}>🇵🇹 PT</option>
 				</select>
 			</form>
 		</div>

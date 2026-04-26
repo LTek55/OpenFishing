@@ -7,7 +7,7 @@ import { saveUpload } from '$lib/server/uploads';
 
 export const load: PageServerLoad = async () => {
 	const distinct = async <T>(col: Parameters<typeof db.selectDistinct>[0]) => {
-		const rows = await db.selectDistinct(col).from(lure).where(isNotNull(Object.values(col)[0]));
+		const rows = await db.selectDistinct(col).from(lure).where(isNotNull(Object.values(col)[0] as Parameters<typeof isNotNull>[0]));
 		return rows.map((r) => Object.values(r)[0] as T).filter(Boolean);
 	};
 

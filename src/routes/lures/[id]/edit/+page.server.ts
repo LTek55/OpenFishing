@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	if (!existing) error(404, 'Lure not found');
 
 	const distinct = async <T>(col: Parameters<typeof db.selectDistinct>[0]) => {
-		const rows = await db.selectDistinct(col).from(lure).where(isNotNull(Object.values(col)[0]));
+		const rows = await db.selectDistinct(col).from(lure).where(isNotNull(Object.values(col)[0] as Parameters<typeof isNotNull>[0]));
 		return rows.map((r) => Object.values(r)[0] as T).filter(Boolean);
 	};
 

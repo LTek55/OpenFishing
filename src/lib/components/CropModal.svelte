@@ -28,7 +28,7 @@
 			highlight: false,
 			cropBoxMovable: true,
 			cropBoxResizable: true,
-			toggleDragModeOnDblClick: false,
+			toggleDragModeOnDblclick: false,
 		});
 	});
 
